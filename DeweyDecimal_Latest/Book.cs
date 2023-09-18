@@ -10,15 +10,24 @@ namespace DeweyDecimal_Latest
 {
     internal class Book
     {
-        public int CallingNumber { get; set; }
+        public string CallingNumber { get; set; }
         public Panel BookPanel { get; set; }
         public Color BookColor { get; set; }
 
-        public Book(int callingNumber, Panel bookPanel, Color bookColor)
+        public Book(string callingNumber, Panel bookPanel, Color bookColor)
         {
             CallingNumber = callingNumber;
             BookPanel = bookPanel;
             BookColor = bookColor;
         }
+
+
+       /* public string ValidateCallingOrder(Book book, List<Book> bookList)
+        {
+            bool isValid;
+            string message = string.Empty;
+
+             
+        }*/
     }
 }

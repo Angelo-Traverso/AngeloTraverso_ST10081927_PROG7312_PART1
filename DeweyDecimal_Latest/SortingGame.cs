@@ -19,6 +19,9 @@ namespace DeweyDecimal_Latest
         // List to hold placeHolderPanels
         List<Panel> placeHolderList = new List<Panel>();
 
+        // List to hold book objects
+        List<Book> bookObjectList = new List<Book>();
+
         private Dictionary<string, Panel> bookCallNumberMap = new Dictionary<string, Panel>();
 
         public SortingGame()
@@ -76,6 +79,11 @@ namespace DeweyDecimal_Latest
                         AutoEllipsis = true,
                         Font = new Font("Arial", 8, FontStyle.Regular)
                     };
+
+                    // Create book object
+                    Book book = new Book(callNumberLabel.Text, unsortedPanel, GenerateRandomColor());
+                    // Add Book to list
+                    bookObjectList.Add(book);
 
                     // Add the label to the panel
                     unsortedPanel.Controls.Add(callNumberLabel);
@@ -135,6 +143,12 @@ namespace DeweyDecimal_Latest
             // Determining the selected book/panel
             Control selectedBook = sender as Control;
 
+            if (selectedBook == null)
+            {
+                // Handle the case where selectedBook is null
+                return;
+            }
+
             // Dictionary to hold each panel and their distance to placeholder
             Dictionary<Panel, double> distanceToPlaceHolder = new Dictionary<Panel, double>();
 
@@ -152,25 +166,38 @@ namespace DeweyDecimal_Latest
             if (closestPair.Key == null)
             {
                 // No closest placeholder found
-                return; 
+                return;
             }
 
             Panel closestPlaceholder = closestPair.Key;
             double closestDistance = closestPair.Value;
 
-            bool isOccupied = IsPlaceholderOccupied(closestPlaceholder);
+            bool isOccupied = IsPlaceholderOccupied(closestPlaceholder, out Control occupyingBook);
 
             if (!isOccupied)
             {
                 selectedBook.Location = closestPlaceholder.Location;
                 PlaySound("Wink.mp3");
+                MessageBox.Show("The placeholder is not occupied.");
             }
             else
             {
-                // Send book back to original position
-                selectedBook.Location = (Point)selectedBook.Tag;
+                if (occupyingBook != null)
+                {
+                    // Send book back to original position
+                    selectedBook.Location = (Point)selectedBook.Tag;
+
+                    // Assuming the call number is in the first control (label)
+                    string callNumber = (occupyingBook.Controls[0] as Label)?.Text;
+                    MessageBox.Show("Occupying Book: " + callNumber);
+                }
+                else
+                {
+                    MessageBox.Show("Error: Occupying book is null.");
+                }
             }
         }
+
 
         // ------------------------------------------------------------------ //
         private bool IsPlaceholderOccupied(Panel placeholder)
@@ -224,12 +251,35 @@ namespace DeweyDecimal_Latest
         /// <param name="url"></param>
         private void PlaySound(string url)
         {
-
             WMPLib.WindowsMediaPlayer wplayer = new WMPLib.WindowsMediaPlayer();
-
             wplayer.URL = $"Media\\{url}";
             wplayer.controls.play();
-
         }
+
+        /// <summary>
+        ///     Method to validate whether a placeholder is occupied or not.
+        ///     The method returns a boolean and the control which is occupying the space
+        /// </summary>
+        /// <param name="placeholder"></param>
+        /// <param name="occupyingBook"></param>
+        /// <returns></returns>
+        private bool IsPlaceholderOccupied(Panel placeholder, out Control occupyingBook)
+        {
+            foreach (Control bookPanel in bookList)
+            {
+                // Check if the book panel is at the same location as the placeholder
+                if (bookPanel.Location == placeholder.Location)
+                {
+                    occupyingBook = bookPanel;
+                    return true;  // Placeholder is occupied
+                }
+            }
+
+            occupyingBook = null;
+
+            // Placeholder is not occupied
+            return false;
+        }
+
     }
 }
