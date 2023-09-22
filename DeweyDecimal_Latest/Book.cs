@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 using System.Windows.Forms;
 
 namespace DeweyDecimal_Latest
 {
-    internal class Book
+    /// <summary>
+    ///      struct used to ensure immutability and prevent unintended changes to the struct's fields.
+    /// </summary>
+    public struct Book
     {
-        public string CallingNumber { get; set; }
-        public Panel BookPanel { get; set; }
-        public Color BookColor { get; set; }
+        public string CallingNumber { get; }
+        public Panel BookPanel { get; }
+        public Color BookColor { get; }
 
         public Book(string callingNumber, Panel bookPanel, Color bookColor)
         {
@@ -20,14 +18,5 @@ namespace DeweyDecimal_Latest
             BookPanel = bookPanel;
             BookColor = bookColor;
         }
-
-
-       /* public string ValidateCallingOrder(Book book, List<Book> bookList)
-        {
-            bool isValid;
-            string message = string.Empty;
-
-             
-        }*/
     }
 }
