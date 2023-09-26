@@ -11,11 +11,15 @@ namespace DeweyDecimal_Latest
 
         public int attempts { get; set; }
 
-        public Statistics(DateTime timeStamp, double _score, int _attempts)
+        public TimeSpan time { get; set; }
+
+
+        public Statistics(DateTime timeStamp, double _score, int _attempts, TimeSpan _time)
         {
             this.timeStamp = timeStamp;
             this.score = _score;
             this.attempts = _attempts;
+            this.time = _time;
         }
 
         /// <summary>
@@ -24,6 +28,6 @@ namespace DeweyDecimal_Latest
         /// <param name="statsList"></param>
         /// <param name="score"></param>
         /// <param name="attempts"></param>
-        public void CaptureStats(List<Statistics> statsList, double score, int attempts) => statsList.Add(new Statistics(DateTime.Now, score, attempts));
+        public void CaptureStats(List<Statistics> statsList, double score, int attempts, TimeSpan time) => statsList.Add(new Statistics(DateTime.Now, score, attempts, time));
     }
 }

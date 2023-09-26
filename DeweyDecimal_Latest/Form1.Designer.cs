@@ -33,20 +33,23 @@
             // 
             // sortingGame1
             // 
-            this.sortingGame1.Location = new System.Drawing.Point(71, 36);
+            this.sortingGame1.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.sortingGame1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.sortingGame1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.sortingGame1.Location = new System.Drawing.Point(0, 0);
             this.sortingGame1.Name = "sortingGame1";
-            this.sortingGame1.Size = new System.Drawing.Size(937, 710);
+            this.sortingGame1.Size = new System.Drawing.Size(1259, 749);
             this.sortingGame1.TabIndex = 0;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1060, 749);
+            this.ClientSize = new System.Drawing.Size(1259, 749);
             this.Controls.Add(this.sortingGame1);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Form1";
+            this.Text = "Replace - Dewey Decimal Game";
             this.ResumeLayout(false);
 
         }
