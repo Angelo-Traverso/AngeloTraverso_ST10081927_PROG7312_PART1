@@ -11,30 +11,21 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DeweyDecimalTimer;
 
 namespace DeweyDecimal_Latest
 {
     public partial class SortingGame : UserControl
     {
-
-        private DateTime pauseTime;  // Store the time when paused
-        private TimeSpan remainingTime;  // Store the remaining time
-
-        private bool isGameDone = false;
         /// <summary>
         ///     Instance of GameTimer
         /// </summary>
-        private GameTimer gameTimer;
+        private DeweyTimer deweyTimer;
 
         /// <summary>
         ///     Holds the number of rounds the user has completed
         /// </summary>
         private int rounds = 0;
-
-        /// <summary>
-        ///     Dictionairy to hold the closest placeholder and distance
-        /// </summary>
-        private Dictionary<Panel, double> distanceToPlaceHolder = new Dictionary<Panel, double>();
 
         /// <summary>
         ///     Holds number of successful attempts
@@ -81,22 +72,30 @@ namespace DeweyDecimal_Latest
         /// </summary>
         private List<Statistics> statsList = new List<Statistics>();
 
+        /// <summary>
+        ///     Stores users' score
+        /// </summary>
         int score = 0;
-
-        List<Point> bottomShelfPlacementPoints = new List<Point>();
 
         /// <summary>
         ///     Keep state of all books being placed
         /// </summary>
         private bool allBooksPlaced = false;
 
+        /// <summary>
+        ///     Stores the state of the pause/play functionality
+        /// </summary>
         private bool isPaused = true;
 
-        private int numOfPauses = 0;
-
+        /// <summary>
+        ///     Random instance
+        /// </summary>
         private Random random = new Random();
 
-
+        /// <summary>
+        ///     Dictionairy to hold the closest placeholder and distance
+        /// </summary>
+        private Dictionary<Panel, double> distanceToPlaceHolder = new Dictionary<Panel, double>();
 
         /// <summary>
         ///     Instance of BookPlacementHandler
@@ -108,6 +107,9 @@ namespace DeweyDecimal_Latest
         /// </summary>
         private SoundPlayer soundPlayer = new SoundPlayer();
 
+        /// <summary>
+        ///     Instance of Statistics
+        /// </summary>
         Statistics stats = new Statistics();
 
         /// <summary>
@@ -133,64 +135,78 @@ namespace DeweyDecimal_Latest
 
             SetPersonalBest();
 
+            SetTransparency();
+        }
+
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Sets transparency of controls in front of picturebox
+        ///     (Passant, 2012)
+        /// </summary>
+        private void SetTransparency()
+        {
+            //  (Passant, 2012)
             var pos = lblPersonalBest.Parent.PointToScreen(lblPersonalBest.Location);
             pos = pbBackground.PointToClient(pos);
             lblPersonalBest.Parent = pbBackground;
             lblPersonalBest.Location = pos;
             lblPersonalBest.BackColor = Color.Transparent;
 
+            // (Passant, 2012)
             var pos2 = lblScore.Parent.PointToScreen(lblScore.Location);
             pos2 = pbBackground.PointToClient(pos2);
             lblScore.Parent = pbBackground;
             lblScore.Location = pos2;
             lblScore.BackColor = Color.Transparent;
 
+            // (Passant, 2012)
             var pos3 = pnlTimer.Parent.PointToScreen(pnlTimer.Location);
             pos3 = pbBackground.PointToClient(pos3);
             pnlTimer.Parent = pbBackground;
             pnlTimer.Location = pos3;
             pnlTimer.BackColor = Color.Transparent;
-
-           
-
         }
 
-        private void StartGame()
-        {
-            var response = MessageBox.Show("Are you ready?\nClick 'Yes' to start, or 'No' to go back to the main menu", "Start Game", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-
-            if (response == DialogResult.No)
-            {
-                StartMenu startMenu = new StartMenu();
-                this.Hide();
-                startMenu.Show();
-            }
-            else
-            {
-                // Uncomment for background image debugging
-            }
-        }
-
-        private void GameTimer_Elapsed(object sender, ElapsedEventArgs e)
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Updates timer
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void GameTimer_Elapsed(object sender, DeweyDecimalTimer.ElapsedEventArgs e)
         {
             elapsedTimeInSeconds = e.ElapsedTimeInSeconds;
-            UpdateUITimer();  // Update your UI with the elapsed time
+            if (lblTimer.IsHandleCreated)
+            {
+                lblTimer.Invoke(new Action(() => UpdateUITimer()));
+            }
         }
 
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Updates UI Timer
+        /// </summary>
         private void UpdateUITimer()
         {
+            // Checking if the label is not already disposed and setting invoke to required
+            if (!lblTimer.IsDisposed && lblTimer.InvokeRequired)
+            {
+                lblTimer.Invoke(new Action(() => UpdateUITimer()));
+                return;
+            }
+
             TimeSpan elapsedTime = TimeSpan.FromSeconds(elapsedTimeInSeconds);
             lblTimer.Text = elapsedTime.ToString(@"hh\:mm\:ss");
         }
-        // ------------------------------------------------------------------ //
+        // ----------------------------------------------------------------------------------------------------------- //
         /// <summary>
         ///     Initializing game timer
         /// </summary>
         private void InitializeTimer()
         {
-            gameTimer = new GameTimer(1000);
-            gameTimer.Elapsed += GameTimer_Elapsed;
-            gameTimer.Start();
+            deweyTimer = new DeweyTimer(1000);
+            deweyTimer.Elapsed += GameTimer_Elapsed;
+            deweyTimer.Start();
         }
 
         // -------------------------------- Mouse Events -------------------------------- //
@@ -205,6 +221,7 @@ namespace DeweyDecimal_Latest
 
             Cursor.Current = Cursors.Hand;
         }
+
         // ------------------------------------------------------------------ //
         /// <summary>
         ///     Finding nearest panel placeholder  
@@ -237,9 +254,8 @@ namespace DeweyDecimal_Latest
 
         // -------------------------------- End Mouse Events -------------------------------- //
 
-        // ------------------------------------------------------------------ //
         /// <summary>
-        ///     Method to set books panels to draggable
+        ///     Sets book panels to draggable
         /// </summary>
         private void SetDraggable(List<Panel> bList)
         {
@@ -253,6 +269,7 @@ namespace DeweyDecimal_Latest
         /// <summary>
         ///     Method populates book list
         ///     Null is returned first to efficiancy
+        ///     OpenAI GPT3.5 was used here
         /// </summary>
         private void PopulateBooks(List<Panel> tempList)
         {
@@ -260,7 +277,6 @@ namespace DeweyDecimal_Latest
             for (int i = 1; i <= 10; i++)
             {
                 Panel unsortedPanel = Controls.Find($"pnlUnsorted{i}", true).FirstOrDefault() as Panel;
-                bottomShelfPlacementPoints.Add(unsortedPanel.Location);
 
                 if (unsortedPanel == null)
                 {
@@ -275,7 +291,7 @@ namespace DeweyDecimal_Latest
                     unsortedPanel.MouseUp += pnlBook_MouseUp;
                     unsortedPanel.BorderStyle = BorderStyle.Fixed3D;
                     unsortedPanel.Tag = unsortedPanel.Location;
-                    unsortedPanel.BackColor = GenerateRandomColor();
+                    unsortedPanel.BackColor = bookHelper.GenerateRandomColor(random);
                     unsortedPanel.Enabled = true;
 
                     Label callNumberLabel = new Label();
@@ -288,13 +304,11 @@ namespace DeweyDecimal_Latest
                     callNumberLabel.Font = new Font("Arial", 8, FontStyle.Regular);
 
 
-                    Book book = new Book(callNumberLabel.Text, unsortedPanel, GenerateRandomColor());
+                    Book book = new Book(callNumberLabel.Text, unsortedPanel, bookHelper.GenerateRandomColor(random));
 
                     bookObjectList.Add(book);
 
                     unsortedPanel.Controls.Add(callNumberLabel);
-
-
                 }
             }
         }
@@ -338,31 +352,29 @@ namespace DeweyDecimal_Latest
                 }
             }
         }
+
         // ------------------------------------------------------------------ //
         /// <summary>
         ///     Handles the placement of books
+        ///     OpenAI GPT3.5 was used here
         /// </summary>
         /// <param name="selectedBook"></param>
         /// <param name="closestPlaceholder"></param>
         private void HandleBookPlacement(Book selectedBook, Panel closestPlaceholder)
         {
-            bool isOccupied = BookPlacementHandler.IsPlaceholderOccupied(closestPlaceholder, bookList, out Control occupyingBook);
-
-
-            if (!isOccupied)
-            {
-                if (!selectedBook.IsPlaced)
-                {
-                    _ = PlaySound("Wink.mp3");
-                    selectedBook.IsPlaced = true;
-                }
-
-                selectedBook.BookPanel.Location = closestPlaceholder.Location;
-            }
-            else
+            if (BookPlacementHandler.IsPlaceholderOccupied(closestPlaceholder, bookList, out Control occupyingBook))
             {
                 HandleOccupiedPlaceholder(selectedBook, occupyingBook);
+                return;
             }
+
+            if (!selectedBook.IsPlaced)
+            {
+                _ = PlaySound("Wink.mp3");
+                selectedBook.IsPlaced = true;
+            }
+
+            selectedBook.BookPanel.Location = closestPlaceholder.Location;
 
             CheckAllBooksPlaced();
         }
@@ -376,8 +388,6 @@ namespace DeweyDecimal_Latest
         /// <param name="occupyingBook"></param>
         private void HandleOccupiedPlaceholder(Book selectedBook, Control occupyingBook)
         {
-            // Handle swopping here
-
             if (occupyingBook != null)
             {
                 selectedBook.BookPanel.Location = (Point)selectedBook.BookPanel.Tag;
@@ -386,21 +396,6 @@ namespace DeweyDecimal_Latest
             {
                 MessageBox.Show("Error: Occupying book is null.");
             }
-        }
-
-        // ------------------------------------------------------------------ //
-        /// <summary>
-        ///     Method generates random colors
-        ///     Method is biased towards lighter colors
-        /// </summary>
-        /// <returns></returns>
-        private Color GenerateRandomColor()
-        {
-            int red = random.Next(128, 256);
-            int green = random.Next(128, 256);
-            int blue = random.Next(128, 256);
-
-            return Color.FromArgb(red, green, blue);
         }
 
         // ------------------------------------------------------------------ //
@@ -414,20 +409,6 @@ namespace DeweyDecimal_Latest
             {
                 soundPlayer.PlaySound($"Media\\{url}");
             });
-        }
-
-        /// <summary>
-        ///     Continue playing music
-        /// </summary>
-        /// <param name="newState"></param>
-        private void OnPlayStateChange(int newState)
-        {
-            // Check if the media has ended
-            if ((WMPLib.WMPPlayState)newState == WMPLib.WMPPlayState.wmppsStopped)
-            {
-                // Music has finished playing, do something if needed
-                Console.WriteLine("Music finished playing.");
-            }
         }
 
         // ------------------------------------------------------------------ //
@@ -453,24 +434,12 @@ namespace DeweyDecimal_Latest
         /// </summary>
         private void CheckAllBooksPlaced()
         {
-            allBooksPlaced = true;
-
-            foreach (Panel placeholder in placeHolderList)
-            {
-                bool isOccupied = BookPlacementHandler.IsPlaceholderOccupied(placeholder, bookList, out Control occupyingBook);
-
-                if (!isOccupied)
-                {
-                    allBooksPlaced = false;
-
-                    break;
-                }
-            }
+            // Using LINQ instead of a loop
+            allBooksPlaced = placeHolderList.All(placeholder => BookPlacementHandler.IsPlaceholderOccupied(placeholder, bookList, out _));
 
             if (allBooksPlaced)
             {
                 game_timer.Stop();
-
                 CheckBookOrder();
             }
         }
@@ -489,84 +458,106 @@ namespace DeweyDecimal_Latest
         /// <summary>
         ///     Checks the users' order of the books for a score
         /// </summary>
-        private async void CheckBookOrder()
+        private void CheckBookOrder()
         {
             LoadPlacedBooks();
 
-            // Ensure the correct book order list is not empty
             if (correctBookOrder.Count == 0)
             {
-                MessageBox.Show("Error: Correct book order list is empty.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowErrorMessage("Correct book order list is empty.");
                 return;
             }
 
-            List<string> placedBookCallNumbers = new List<string>();
+            List<string> placedBookCallNumbers = GetPlacedBookCallNumbers();
 
-            // Get the call numbers of the books in the order they were placed
-            foreach (Book placedBook in placedBookList)
-            {
-                placedBookCallNumbers.Add(placedBook.CallingNumber);
-            }
-
-            // Check if the placed books are in the correct order
-            bool isCorrectOrder = Enumerable.SequenceEqual(correctBookOrder, placedBookCallNumbers);
-
-
-
-
+            bool isCorrectOrder = CheckIfBooksAreInCorrectOrder(placedBookCallNumbers);
 
             if (isCorrectOrder)
             {
-
-
-                lblScore.Text = "Score: " + (score + 5).ToString();
-
-                gameTimer.Stop();
-                EndGame();
-
-                MessageBox.Show("Congratulations! You placed the books in the correct order.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                menuRestart.BackColor = Color.Green;
-
-                successAttempts += 1;
-
-                rounds += 1;
-
-                stats.CaptureStats(statsList, score, successAttempts, failedAttempts, false, TimeSpan.FromSeconds(elapsedTimeInSeconds));
-
+                HandleCorrectBookOrder();
             }
             else
             {
-                gameTimer.Stop();
-                await PlaySound("lose.mp3");
+                 HandleIncorrectBookOrder();
+            }
+        }
 
-                HighlightIncorrectPlacements(placedBookList);
+        // ------------------------------------------------------------------ //
+        /// <summary>
+        ///     Accepts a message as a string input to dipslay a message
+        /// </summary>
+        /// <param name="message"></param>
+        private void ShowErrorMessage(string message)
+        {
+            MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
 
-                EndGame();
-                MessageBox.Show("Sorry, the books are not placed in the correct order. Try again.", "Incorrect Order", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        // ------------------------------------------------------------------ //
+        /// <summary>
+        ///     Gets all placed books' calling numbers
+        /// </summary>
+        /// <returns></returns>
+        private List<string> GetPlacedBookCallNumbers()
+        {
+            return placedBookList.Select(placedBook => placedBook.CallingNumber).ToList();
+        }
 
-                failedAttempts += 1;
+        // ------------------------------------------------------------------ //
+        /// <summary>
+        ///     Check if the books are in the correct order
+        ///     OpenAI GPT3.5 was used here
+        /// </summary>
+        /// <param name="placedBookCallNumbers"></param>
+        /// <returns></returns>
+        private bool CheckIfBooksAreInCorrectOrder(List<string> placedBookCallNumbers)
+        {
+            return Enumerable.SequenceEqual(correctBookOrder, placedBookCallNumbers);
+        }
 
-                menuRestart.BackColor = Color.Green;
+        // ------------------------------------------------------------------ //
+        /// <summary>
+        ///     Handles the books if they are in the correct order
+        /// </summary>
+        private void HandleCorrectBookOrder()
+        {
+            lblScore.Text = "Score: " + (score + 5).ToString();
+            deweyTimer.Stop();
+            EndGame();
+            MessageBox.Show("Congratulations! You placed the books in the correct order.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            menuRestart.BackColor = Color.Green;
+            successAttempts += 1;
+            rounds += 1;
+            stats.CaptureStats(statsList, score, successAttempts, failedAttempts, false, TimeSpan.FromSeconds(elapsedTimeInSeconds));
+        }
 
-
-                if (score - 5 >= 0)
-                {
-                    lblScore.Text = "Score: " + (score - 5).ToString();
-                }
-                else
-                {
-                    lblScore.Text = "Score: 0";
-                    stats.CaptureStats(statsList, 0, successAttempts, failedAttempts, true, TimeSpan.FromSeconds(elapsedTimeInSeconds));
-                }
-
-
+        /// <summary>
+        ///     Handles books placed in the incorrect order
+        /// </summary>
+        private async void HandleIncorrectBookOrder()
+        {
+            deweyTimer.Stop();
+            await PlaySound("lose.mp3");
+            HighlightIncorrectPlacements(placedBookList);
+            EndGame();
+            MessageBox.Show("Sorry, the books are not placed in the correct order. Try again.", "Incorrect Order", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            failedAttempts += 1;
+            menuRestart.BackColor = Color.Green;
+            lblScore.Text = "Score: " + Math.Max(0, score - 5).ToString();
+            if (score - 5 < 0)
+            {
+                lblScore.Text = "Score: 0";
+                stats.CaptureStats(statsList, 0, successAttempts, failedAttempts, true, TimeSpan.FromSeconds(elapsedTimeInSeconds));
+            }
+            else
+            {
+                stats.CaptureStats(statsList, score, successAttempts, failedAttempts, true, TimeSpan.FromSeconds(elapsedTimeInSeconds));
             }
         }
 
         // ------------------------------------------------------------------ //
         /// <summary>
         ///     Adds all place holder books to a list
+        ///     OpenAI GPT3.5 was used here
         /// </summary>
         private void LoadPlacedBooks()
         {
@@ -633,34 +624,9 @@ namespace DeweyDecimal_Latest
 
             SetDraggable(bookList);
 
-            gameTimer.Stop();
+            deweyTimer.Stop();
 
             InitializeTimer();
-        }
-
-        // ------------------------------------------------------------------ //
-        /// <summary>
-        ///     Plays background music
-        /// </summary>
-        private void PlayBackgroundMusic()
-        {
-            while (true)
-            {
-
-                // Play the music
-                WMPLib.WindowsMediaPlayer wplayer = new WMPLib.WindowsMediaPlayer();
-                wplayer.PlayStateChange += new WMPLib._WMPOCXEvents_PlayStateChangeEventHandler(OnPlayStateChange);
-
-                // Set the URL and play the music
-                wplayer.URL = "Media\\Piano.mp3";
-                wplayer.controls.play();
-
-                // Wait for the music to finish or be paused
-                while (wplayer.playState == WMPLib.WMPPlayState.wmppsPlaying || wplayer.playState == WMPLib.WMPPlayState.wmppsTransitioning)
-                {
-                    System.Threading.Thread.Sleep(100);
-                }
-            }
         }
 
         // ------------------------------------------------------------------ //
@@ -683,13 +649,10 @@ namespace DeweyDecimal_Latest
         {
             for (int i = 0; i < placedBooks.Count; i++)
             {
-                // Check if the book is incorrectly placed
                 bool isIncorrect = correctBookOrder[i] != placedBooks[i].CallingNumber;
-
 
                 if (isIncorrect)
                 {
-                    // Highlight the incorrectly placed book (e.g., change color)
                     placedBooks[i].BookPanel.BackColor = Color.Red;
                 }
             }
@@ -764,8 +727,6 @@ namespace DeweyDecimal_Latest
 
             if (backgroundImage != null)
             {
-                /* this.BackgroundImage = backgroundImage;
-                 this.BackgroundImageLayout = ImageLayout.Stretch;*/
                 pbBackground.Image = backgroundImage;
                 pbBackground.BackgroundImageLayout = ImageLayout.Stretch;
             }
@@ -790,6 +751,12 @@ namespace DeweyDecimal_Latest
             }
         }
 
+        // ------------------------------------------------------------------ //
+        /// <summary>
+        ///     Handles user click on 'MySkill'
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void menuMySkill_Click(object sender, EventArgs e)
         {
             if (statsList.Count == 0)
@@ -803,23 +770,33 @@ namespace DeweyDecimal_Latest
             }
         }
 
+        // ------------------------------------------------------------------ //
+        /// <summary>
+        ///     Restarts users' game
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void menuRestart_Click(object sender, EventArgs e)
         {
             menuRestart.BackColor = Color.Transparent;
             ResetGame();
         }
 
+        // ------------------------------------------------------------------ //
+        /// <summary>
+        ///     Handles pausing and playing the game and timer
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void menuPausePlay_Click(object sender, EventArgs e)
         {
-            numOfPauses++;
-
             const string PAUSE = "Pause";
             const string PLAY = "Play";
 
             if (isPaused)
             {
                 menuPausePlay.Text = PLAY;
-                gameTimer.Pause();  // Pause the custom timer
+                deweyTimer.Pause();  // Pause the custom timer
                 HideBooks();
                 DisableBooks();
                 isPaused = false;
@@ -827,13 +804,19 @@ namespace DeweyDecimal_Latest
             else
             {
                 menuPausePlay.Text = PAUSE;
-                gameTimer.Resume();  // Resume the custom timer
+                deweyTimer.Resume();  // Resume the custom timer
                 isPaused = true;
                 EnableBooks();
                 ShowBooks();
             }
         }
 
+        // ------------------------------------------------------------------ //
+        /// <summary>
+        ///     Returns user to the main menu
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void menuReturnMenu_Click(object sender, EventArgs e)
         {
             var response = MessageBox.Show("You are about to leave your game.\nAll progress will be lost. Are you sure you want to leave?", "Warning!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
@@ -851,6 +834,11 @@ namespace DeweyDecimal_Latest
            
         }
 
+        /// <summary>
+        ///     Show a help message to the user
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void helpToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Move the books around to find the correct dewey decimal order!\n" +
@@ -859,8 +847,11 @@ namespace DeweyDecimal_Latest
                 "* Click 'Pause/PLay' to pause and play the game.\n" +
                 "* Click 'My Skill' to see how your games have been going.\n" +
                 "* Click 'Restart' to restart your current game.\n" +
-                "* In order to get a personal best score, you need to place all 10 books in the correct order.", "Help",MessageBoxButtons.OK, MessageBoxIcon.Information);
+                "* In order to get a personal best score, you need to place all 10 books in the correct order.\n" +
+                "* You earn 5 points for every game you get the order correct.", "Help",MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }
 // ------------------------------ ......ooooooo000000 END FILE 0000000oooooo...... ------------------------------ //
+// ------------------------------ REFERENCES ------------------------------- //
+// Passant, H. (2012) Transparent control over PictureBox, Stack Overflow. Available at: https://stackoverflow.com/questions/9387267/transparent-control-over-picturebox (Accessed: 23 September 2023). 

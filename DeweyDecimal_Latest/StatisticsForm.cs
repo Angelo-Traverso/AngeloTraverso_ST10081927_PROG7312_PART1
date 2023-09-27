@@ -1,4 +1,11 @@
-﻿using System;
+﻿/*
+ *  Full Name: Angelo Traverso
+ *  Student Number: ST10081927
+ *  Subject: Programming 3B
+ *  Code: PROG7312
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -89,7 +96,6 @@ namespace DeweyDecimal_Latest
         /// <returns></returns>
         private string QuickestCompletionTime()
         {
-            // Filter the statistics to consider only games with isFail = false
             var validStats = statsList.Where(stat => !stat.isFail).ToList();
 
             if (validStats.Count == 0)
@@ -102,7 +108,7 @@ namespace DeweyDecimal_Latest
             int minutes = (int)lowestSeconds / 60;
             int seconds = (int)lowestSeconds % 60;
 
-            // Format the time as "M:SS"
+            // Formatting time
             string formattedTime = $"{minutes}:{seconds.ToString("D2")}"; // D2 pads the seconds with leading zeros if needed
 
             return formattedTime;
@@ -144,18 +150,6 @@ namespace DeweyDecimal_Latest
             string formattedAverageTime = $"{averageMinutes:D2}:{averageSecondsRemainder:D2}";
 
             return formattedAverageTime;
-        }
-
-        // ----------------------------------------------------------------------------------------------------------- //
-
-        /// <summary>
-        ///     Back button click
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnBack_Click(object sender, EventArgs e)
-        {
-            this.Hide();
         }
     }
 }

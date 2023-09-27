@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿/*
+ *  Full Name: Angelo Traverso
+ *  Student Number: ST10081927
+ *  Subject: Programming 3B
+ *  Code: PROG7312
+ */
+
+using System;
 using System.Windows.Forms;
 
 namespace DeweyDecimal_Latest
@@ -15,10 +15,23 @@ namespace DeweyDecimal_Latest
         public StartMenu()
         {
             InitializeComponent();
+            HandleWindowState();
+        }
+
+        /// <summary>
+        ///     Removes maximise and minimize boxes
+        /// </summary>
+        private void HandleWindowState()
+        {
             this.MaximizeBox = false;
             this.MinimizeBox = false;
         }
 
+        /// <summary>
+        ///     Click event for game selection
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnReplaceBooks_Click(object sender, EventArgs e)
         {
             Form1 form = new Form1();
@@ -26,9 +39,15 @@ namespace DeweyDecimal_Latest
             this.Hide();
         }
 
+        /// <summary>
+        ///     On click event for exiting application
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnExit_Click(object sender, EventArgs e)
         {
             Environment.Exit(1);
         }
     }
 }
+// --------------------------------- .....ooooo00000 END OF FILE 00000ooooo..... --------------------------------- //

@@ -5,6 +5,8 @@ VisualStudioVersion = 17.7.34009.444
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeweyDecimal_Latest", "DeweyDecimal_Latest\DeweyDecimal_Latest.csproj", "{B9AEF888-BCFD-4805-9854-7EFACB88A14A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeweyDecimalTimer", "DeweyDecimalTimer\DeweyDecimalTimer.csproj", "{FF8E7539-3ED8-4E50-BABF-F3C94AD5177B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{B9AEF888-BCFD-4805-9854-7EFACB88A14A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9AEF888-BCFD-4805-9854-7EFACB88A14A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B9AEF888-BCFD-4805-9854-7EFACB88A14A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF8E7539-3ED8-4E50-BABF-F3C94AD5177B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF8E7539-3ED8-4E50-BABF-F3C94AD5177B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF8E7539-3ED8-4E50-BABF-F3C94AD5177B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF8E7539-3ED8-4E50-BABF-F3C94AD5177B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
