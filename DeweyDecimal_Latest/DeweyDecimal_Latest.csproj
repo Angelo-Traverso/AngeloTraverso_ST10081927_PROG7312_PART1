@@ -43,7 +43,7 @@
       <HintPath>..\packages\Control.Draggable.1.0.5049.269\lib\net35-Client\Control.Draggable.dll</HintPath>
     </Reference>
     <Reference Include="DeweyDecimalTimer">
-      <HintPath>..\DeweyDecimalTimer\bin\Debug\DeweyDecimalTimer.dll</HintPath>
+      <HintPath>..\..\..\DeweyDecimal_Latest\DeweyDecimalTimer\bin\Debug\DeweyDecimalTimer.dll</HintPath>
     </Reference>
     <Reference Include="Interop.WMPLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\WMPLib.1.0.0\lib\Interop.WMPLib.dll</HintPath>
