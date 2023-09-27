@@ -30,7 +30,7 @@ namespace DeweyDecimal_Latest
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Environment.Exit(1);
+            //Environment.Exit(1);
         }
     }
 }

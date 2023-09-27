@@ -11,7 +11,7 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DeweyDecimalTimer;
+using TimerLib;
 
 namespace DeweyDecimal_Latest
 {
@@ -20,7 +20,7 @@ namespace DeweyDecimal_Latest
         /// <summary>
         ///     Instance of GameTimer
         /// </summary>
-        private DeweyTimer deweyTimer;
+        private Class1 deweyTimer;
 
         /// <summary>
         ///     Holds the number of rounds the user has completed
@@ -173,7 +173,7 @@ namespace DeweyDecimal_Latest
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void GameTimer_Elapsed(object sender, DeweyDecimalTimer.ElapsedEventArgs e)
+        private void GameTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             elapsedTimeInSeconds = e.ElapsedTimeInSeconds;
             if (lblTimer.IsHandleCreated)
@@ -204,7 +204,7 @@ namespace DeweyDecimal_Latest
         /// </summary>
         private void InitializeTimer()
         {
-            deweyTimer = new DeweyTimer(1000);
+            deweyTimer = new Class1(1000);
             deweyTimer.Elapsed += GameTimer_Elapsed;
             deweyTimer.Start();
         }
