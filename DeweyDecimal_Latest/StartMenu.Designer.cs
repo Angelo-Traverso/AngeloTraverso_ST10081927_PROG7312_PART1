@@ -28,61 +28,81 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StartMenu));
             this.lblMenuHeading = new System.Windows.Forms.Label();
             this.btnFindCallNumbers = new System.Windows.Forms.Button();
             this.btnIdentifyAreas = new System.Windows.Forms.Button();
             this.btnReplaceBooks = new System.Windows.Forms.Button();
+            this.btnExit = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lblMenuHeading
             // 
             this.lblMenuHeading.AutoSize = true;
-            this.lblMenuHeading.Font = new System.Drawing.Font("Goudy Stout", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMenuHeading.Location = new System.Drawing.Point(184, 99);
+            this.lblMenuHeading.BackColor = System.Drawing.Color.Transparent;
+            this.lblMenuHeading.Font = new System.Drawing.Font("Microsoft JhengHei", 36F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMenuHeading.Location = new System.Drawing.Point(196, 90);
             this.lblMenuHeading.Name = "lblMenuHeading";
-            this.lblMenuHeading.Size = new System.Drawing.Size(189, 44);
+            this.lblMenuHeading.Size = new System.Drawing.Size(162, 61);
             this.lblMenuHeading.TabIndex = 7;
             this.lblMenuHeading.Text = "Menu";
             // 
             // btnFindCallNumbers
             // 
-            this.btnFindCallNumbers.Location = new System.Drawing.Point(234, 307);
+            this.btnFindCallNumbers.Enabled = false;
+            this.btnFindCallNumbers.Location = new System.Drawing.Point(194, 275);
             this.btnFindCallNumbers.Name = "btnFindCallNumbers";
-            this.btnFindCallNumbers.Size = new System.Drawing.Size(75, 44);
+            this.btnFindCallNumbers.Size = new System.Drawing.Size(164, 29);
             this.btnFindCallNumbers.TabIndex = 6;
             this.btnFindCallNumbers.Text = "Find Call Numbers";
             this.btnFindCallNumbers.UseVisualStyleBackColor = true;
             // 
             // btnIdentifyAreas
             // 
-            this.btnIdentifyAreas.Location = new System.Drawing.Point(234, 233);
+            this.btnIdentifyAreas.Enabled = false;
+            this.btnIdentifyAreas.Location = new System.Drawing.Point(194, 227);
             this.btnIdentifyAreas.Name = "btnIdentifyAreas";
-            this.btnIdentifyAreas.Size = new System.Drawing.Size(75, 44);
+            this.btnIdentifyAreas.Size = new System.Drawing.Size(164, 32);
             this.btnIdentifyAreas.TabIndex = 5;
             this.btnIdentifyAreas.Text = "Identify Area";
             this.btnIdentifyAreas.UseVisualStyleBackColor = true;
             // 
             // btnReplaceBooks
             // 
-            this.btnReplaceBooks.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.btnReplaceBooks.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.btnReplaceBooks.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnReplaceBooks.Location = new System.Drawing.Point(234, 161);
+            this.btnReplaceBooks.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnReplaceBooks.Location = new System.Drawing.Point(194, 166);
             this.btnReplaceBooks.Name = "btnReplaceBooks";
-            this.btnReplaceBooks.Size = new System.Drawing.Size(75, 44);
+            this.btnReplaceBooks.Size = new System.Drawing.Size(164, 44);
             this.btnReplaceBooks.TabIndex = 4;
             this.btnReplaceBooks.Text = "Replace Books";
             this.btnReplaceBooks.UseVisualStyleBackColor = false;
             this.btnReplaceBooks.Click += new System.EventHandler(this.btnReplaceBooks_Click);
             // 
+            // btnExit
+            // 
+            this.btnExit.Location = new System.Drawing.Point(194, 319);
+            this.btnExit.Name = "btnExit";
+            this.btnExit.Size = new System.Drawing.Size(164, 30);
+            this.btnExit.TabIndex = 8;
+            this.btnExit.Text = "Exit";
+            this.btnExit.UseVisualStyleBackColor = true;
+            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
+            // 
             // StartMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(557, 450);
+            this.Controls.Add(this.btnExit);
             this.Controls.Add(this.lblMenuHeading);
             this.Controls.Add(this.btnFindCallNumbers);
             this.Controls.Add(this.btnIdentifyAreas);
             this.Controls.Add(this.btnReplaceBooks);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Name = "StartMenu";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "StartMenu";
@@ -97,5 +117,6 @@
         private System.Windows.Forms.Button btnFindCallNumbers;
         private System.Windows.Forms.Button btnIdentifyAreas;
         private System.Windows.Forms.Button btnReplaceBooks;
+        private System.Windows.Forms.Button btnExit;
     }
 }

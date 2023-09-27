@@ -16,6 +16,9 @@ namespace DeweyDecimal_Latest
         public Form1()
         {
             InitializeComponent();
+
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
         }
     }
 }

@@ -5,6 +5,7 @@ public class GameTimer
 {
     private Timer timer;
     private int elapsedTimeInSeconds;
+    private TimeSpan remainingTime;  // Remaining time in the timer
 
     public event EventHandler<ElapsedEventArgs> Elapsed;
 
@@ -19,13 +20,25 @@ public class GameTimer
 
     public void Start()
     {
-        elapsedTimeInSeconds = 0;
+       // elapsedTimeInSeconds = 0;
         timer.Start();
     }
 
     public void Stop()
     {
         timer.Stop();
+    }
+
+    public void Pause()
+    {
+        remainingTime = TimeSpan.FromMilliseconds(timer.Interval);
+        timer.Stop();
+    }
+
+    public void Resume()
+    {
+        timer.Interval = (int)remainingTime.TotalMilliseconds;
+        timer.Start();
     }
 
     private void Timer_Tick(object sender, EventArgs e)

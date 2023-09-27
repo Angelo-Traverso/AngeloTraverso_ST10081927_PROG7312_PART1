@@ -15,6 +15,8 @@ namespace DeweyDecimal_Latest
         public StartMenu()
         {
             InitializeComponent();
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
         }
 
         private void btnReplaceBooks_Click(object sender, EventArgs e)
@@ -22,6 +24,11 @@ namespace DeweyDecimal_Latest
             Form1 form = new Form1();
             form.Show();
             this.Hide();
+        }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            Environment.Exit(1);
         }
     }
 }

@@ -48,6 +48,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Device" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -155,11 +156,15 @@
     <Content Include="bin\Debug\Control.Draggable.dll" />
     <Content Include="bin\Debug\DeweyDecimal_Latest.exe" />
     <Content Include="bin\Debug\DeweyDecimal_Latest.pdb" />
+    <Content Include="bin\Debug\Images\BackgroundRoom.jpg" />
     <Content Include="bin\Debug\Images\BookShelfNew.png" />
     <Content Include="bin\Debug\Images\clock.png" />
     <Content Include="bin\Debug\Images\Library.jpg" />
+    <Content Include="bin\Debug\Images\MenuBackground.jpg" />
+    <Content Include="bin\Debug\Images\Pause.png" />
     <Content Include="bin\Debug\Images\podium.png" />
     <Content Include="bin\Debug\Images\Restart.png" />
+    <Content Include="bin\Debug\Images\StatsBackground.jpg" />
     <Content Include="bin\Debug\Images\time.png" />
     <Content Include="bin\Debug\Images\WhiteBack.png" />
     <Content Include="bin\Debug\Media\lose.mp3" />
