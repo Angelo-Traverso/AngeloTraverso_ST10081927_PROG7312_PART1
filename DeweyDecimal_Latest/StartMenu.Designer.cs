@@ -59,13 +59,13 @@
             // 
             // btnIdentifyAreas
             // 
-            this.btnIdentifyAreas.Enabled = false;
             this.btnIdentifyAreas.Location = new System.Drawing.Point(194, 227);
             this.btnIdentifyAreas.Name = "btnIdentifyAreas";
             this.btnIdentifyAreas.Size = new System.Drawing.Size(164, 32);
             this.btnIdentifyAreas.TabIndex = 5;
             this.btnIdentifyAreas.Text = "Identify Area";
             this.btnIdentifyAreas.UseVisualStyleBackColor = true;
+            this.btnIdentifyAreas.Click += new System.EventHandler(this.btnIdentifyAreas_Click);
             // 
             // btnReplaceBooks
             // 

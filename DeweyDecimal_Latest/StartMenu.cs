@@ -6,6 +6,7 @@
  */
 
 using System;
+using System.Management.Instrumentation;
 using System.Windows.Forms;
 
 namespace DeweyDecimal_Latest
@@ -47,6 +48,14 @@ namespace DeweyDecimal_Latest
         private void btnExit_Click(object sender, EventArgs e)
         {
             Environment.Exit(1);
+        }
+
+        private void btnIdentifyAreas_Click(object sender, EventArgs e)
+        {
+            IdentifyingAreascs areas = new IdentifyingAreascs();
+
+            areas.Show();
+            this.Hide();
         }
     }
 }
