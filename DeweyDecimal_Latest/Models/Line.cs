@@ -9,8 +9,8 @@ namespace DeweyDecimal_Latest.Models
 {
     internal class Line
     {
-        public Point StartPoint { get; set; }
-        public Point EndPoint { get; set; }
+        public Point StartPoint { get; }
+        public Point EndPoint { get; }
 
         public Line(Point startPoint, Point endPoint)
         {

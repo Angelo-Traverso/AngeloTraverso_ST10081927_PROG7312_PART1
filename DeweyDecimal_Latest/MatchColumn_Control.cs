@@ -14,6 +14,11 @@ namespace DeweyDecimal_Latest
         private Panel selectedQuestion = null;
         private Panel selectedAnswer = null;
 
+        /// <summary>
+        ///     Stores users' total points earned
+        /// </summary>
+        int totalPoints = 0;
+
         private List<Panel> firstColumnPanels;
         private List<Panel> secondColumnPanels;
         private List<QuestionAnswerPair> questionAnswerPairs;
@@ -198,7 +203,20 @@ namespace DeweyDecimal_Latest
             secondColumnItems = secondColumnItems.OrderBy(x => Guid.NewGuid()).ToList();
         }
 
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
 
+            using (Pen pen = new Pen(Color.Firebrick, 4))
+            {
+                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
+                foreach (var line in lines)
+                {
+                    e.Graphics.DrawLine(pen, line.StartPoint, line.EndPoint);
+                }
+            }
+        }
         private void CreateLabelsForColumn(List<string> items, List<Panel> columns)
         {
             for (int i = 0; i < items.Count && i < columns.Count; i++)
@@ -325,7 +343,7 @@ namespace DeweyDecimal_Latest
                 {
                     if (selectedQuestion != null)
                     {
-                        selectedQuestion.BackColor = Color.DimGray;
+                        selectedQuestion.BackColor = Color.LightGray;
                     }
 
                     selectedQuestion = clickedPanel;
@@ -388,6 +406,7 @@ namespace DeweyDecimal_Latest
         {
             int correctCount = 0;
             int totalQuestions = firstColumnItems.Count;
+            
 
             for (int i = 0; i < firstColumnItems.Count; i++)
             {
@@ -412,10 +431,22 @@ namespace DeweyDecimal_Latest
                 }
             }
 
+            UpdateUserScore(correctCount);
+            
+
             string message = $"You answered {correctCount} out of {totalQuestions} questions correctly.";
             MessageBox.Show(message, "Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        private void UpdateUserScore(int numCorrect)
+        {
+            
+            if (numCorrect == 5)
+            {
+                totalPoints += numCorrect * 5;
+                lblPoints.Text = "Points: " + totalPoints.ToString();
+            }
+        }
 
 
 
@@ -424,16 +455,18 @@ namespace DeweyDecimal_Latest
 
         private void DrawLine(Panel startPanel, Panel endPanel)
         {
-            using (Pen pen = new Pen(Color.Firebrick, 4))
+            using (Graphics g = pnlDraw.CreateGraphics())
+            using (LinearGradientBrush brush = new LinearGradientBrush(startPanel.Location, endPanel.Location, Color.Firebrick, Color.DarkRed))
+            using (Pen pen = new Pen(brush, 4))
             {
                 // Smoothing the line drawn
-                pnlDraw.CreateGraphics().SmoothingMode = SmoothingMode.AntiAlias;
+                g.SmoothingMode = SmoothingMode.AntiAlias;
 
                 Point startPoint = new Point(startPanel.Right, startPanel.Top + startPanel.Height / 2);
                 Point endPoint = new Point(endPanel.Left, endPanel.Top + endPanel.Height / 2);
 
                 // Draw the line
-                pnlDraw.CreateGraphics().DrawLine(pen, startPoint, endPoint);
+                g.DrawLine(pen, startPoint, endPoint);
 
                 // Increment the counter
                 questionsWithLinesDrawn++;
@@ -447,15 +480,19 @@ namespace DeweyDecimal_Latest
         {
             foreach (var panel in secondColumnPanels)
             {
-                // Apply the glow effect (e.g., change background color to a lighter color)
-                panel.BackColor = Color.LightBlue;
+                // Check if the panel is not the selected answer
+                if (panel != selectedAnswer)
+                {
+                    // Apply the glow effect (e.g., change background color to a lighter color)
+                    panel.BackColor = Color.LightBlue;
+                }
             }
         }
         private void ClearGlowEffectFromAnswers()
         {
             foreach (var panel in secondColumnPanels)
             {
-                // Clear the glow effect (e.g., reset the background color)
+                // Clear the glow effect
                 panel.BackColor = Color.DimGray;
             }
         }
