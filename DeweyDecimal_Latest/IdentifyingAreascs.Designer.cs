@@ -33,16 +33,17 @@
             // 
             // matchColumn_Control1
             // 
-            this.matchColumn_Control1.Location = new System.Drawing.Point(12, 12);
+            this.matchColumn_Control1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.matchColumn_Control1.Location = new System.Drawing.Point(0, 0);
             this.matchColumn_Control1.Name = "matchColumn_Control1";
-            this.matchColumn_Control1.Size = new System.Drawing.Size(813, 486);
+            this.matchColumn_Control1.Size = new System.Drawing.Size(870, 613);
             this.matchColumn_Control1.TabIndex = 0;
             // 
             // IdentifyingAreascs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(870, 510);
+            this.ClientSize = new System.Drawing.Size(870, 613);
             this.Controls.Add(this.matchColumn_Control1);
             this.Name = "IdentifyingAreascs";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
