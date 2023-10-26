@@ -1,23 +1,23 @@
 ﻿using System;
-//using WMPLib;
+using WMPLib;
 
 namespace DeweyDecimal_Latest
 {
     public class SoundPlayer
     {
-       // private WindowsMediaPlayer mediaPlayer;
+      private WindowsMediaPlayer mediaPlayer;
 
         public SoundPlayer()
         {
-           // mediaPlayer = new WindowsMediaPlayer();
+          mediaPlayer = new WindowsMediaPlayer();
         }
 
         public void PlaySound(string filePath)
         {
             try
             {
-             //   mediaPlayer.URL = filePath;
-              //  mediaPlayer.controls.play();
+              mediaPlayer.URL = filePath;
+               mediaPlayer.controls.play();
             }
             catch (Exception ex)
             {
@@ -29,7 +29,7 @@ namespace DeweyDecimal_Latest
         {
             try
             {
-              //  mediaPlayer.controls.stop();
+              mediaPlayer.controls.stop();
             }
             catch (Exception ex)
             {

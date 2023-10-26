@@ -1,4 +1,13 @@
-﻿using System;
+﻿/*
+ *  Full Name: Angelo Traverso
+ *  Student Number: ST10081927
+ *  Subject: Programming 3B
+ *  Code: PROG7312
+ */
+
+// ------------ Using ------------ //
+
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
@@ -6,23 +15,78 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
 using DeweyDecimal_Latest.Models;
+using TimerLib;
+
+
+// ------------ End Using ------------ //
 
 namespace DeweyDecimal_Latest
 {
     public partial class MatchColumn_Control : UserControl
     {
+        // --------------------------- Declarations --------------------------- //
+        /// <summary>
+        ///  Instance of PanelHelper class
+        ///  Class holds helper methods for panels in this game
+        /// </summary>
+        PanelHelper panelHelper = new PanelHelper();
+
+        /// <summary>
+        ///     Instance of Sorting Game, in order to re-use some methods
+        /// </summary>
+        SortingGame sortingGame = new SortingGame();
+        /// <summary>
+        ///     List to hold all labels created
+        /// </summary>
+        private List<Label> panelLabels = new List<Label>();
+        /// <summary>
+        ///     Holds selected question panel
+        /// </summary>
         private Panel selectedQuestion = null;
+
+        /// <summary>
+        ///     Holds selected answer panel
+        /// </summary>
         private Panel selectedAnswer = null;
 
         /// <summary>
-        ///     Stores users' total points earned
+        ///     Instance of deweyTimer Library
         /// </summary>
-        int totalPoints = 0;
+        private Class1 deweyTimer;
 
+        /// <summary>
+        ///     Holds the fastest time the user has completed the game successfully
+        /// </summary>
+        private TimeSpan fastestTime = new TimeSpan(0, 0, 35);
+     
+        /// <summary>
+        ///     Holds the number of answers made by the user
+        /// </summary>
+        int answerCounter = 0;
+
+        /// <summary>
+        ///     Holds all of the first column panels
+        /// </summary>
         private List<Panel> firstColumnPanels;
+
+        /// <summary>
+        ///     Holds all of the second column panels
+        /// </summary>
         private List<Panel> secondColumnPanels;
+
+        /// <summary>
+        ///     Holds QuestionAnswerPairs that user has chosen
+        /// </summary>
         private List<QuestionAnswerPair> questionAnswerPairs;
+
+        /// <summary>
+        ///     Holds the number of question with a line drawn
+        /// </summary>
         private int questionsWithLinesDrawn = 0;
+
+        /// <summary>
+        ///     Holds the lines drawn
+        /// </summary>
         private List<Line> lines = new List<Line>();
         /// <summary>
         ///  Holds the Calling number associated with each Description
@@ -40,6 +104,11 @@ namespace DeweyDecimal_Latest
         private List<string> secondColumnItems;
 
         /// <summary>
+        ///     Keeps track of the elapsed time for th eusers' game
+        /// </summary>
+        private int elapsedTimeInSeconds = 0;
+
+        /// <summary>
         ///     Holds the correct answers
         /// </summary>
         private List<string> correctAnswers;
@@ -48,15 +117,215 @@ namespace DeweyDecimal_Latest
         ///     Holds scenario
         /// </summary>
         private bool matchDescriptionsToCallNumbers;
-
+        
+        /// <summary>
+        ///     Holds the panels with lines drawn from them
+        /// </summary>
         private Dictionary<Panel, bool> questionLineDrawn = new Dictionary<Panel, bool>();
+
+        /// <summary>
+        ///     Holds questions and their related answers
+        /// </summary>
         private Dictionary<string, string> linkedQuestionsAnswers = new Dictionary<string, string>();
+
+        // --------------------------- End Declarations --------------------------- //
+
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Default Constructor
+        /// </summary>
         public MatchColumn_Control()
         {
             InitializeComponent();
 
-            // Initialize the questionAnswerPairs list with questions and correct answers
+            lblFastestTime.Text = "Personal Best: " + fastestTime;
+        }
 
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Starts a new, fresh game
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnNewGame_Click(object sender, EventArgs e)
+        {
+            btnNewGame.Visible = false;
+            btnNewGame.Enabled = false;
+            ClearAllLines();
+            Reset();
+            panelHelper.EnablePanels(firstColumnPanels, secondColumnPanels);
+        }
+
+        /// <summary>
+        ///     All respective functions are called to start the game
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnStart_Click(object sender, EventArgs e)
+        {
+            btnStart.Visible = false;
+
+            SetAnswerPanelColor();
+
+            InitializeTimer();
+
+            InitializeQuesitonAnswerPairs();
+
+            panelHelper.AttachMouseClickEventHandlers(firstColumnPanels, pnlFColumn_MouseClick);
+            panelHelper.AttachMouseClickEventHandlers(secondColumnPanels, pnlSColumn_MouseClick);
+
+            SetLineDrawnState();
+
+            InitAreaBookData();
+
+            InitColumnItems();
+
+            InitAreaBookData();
+
+            InitColumnItems();
+
+            panelHelper.ResetQuestionPanelColor(firstColumnPanels);
+
+            panelHelper.CreateLabelsForColumn(firstColumnItems, new List<Panel> { pnlFColumn1, pnlFColumn2, pnlFColumn3, pnlFColumn4 }, panelLabels);
+            panelHelper.CreateLabelsForColumn(secondColumnItems, new List<Panel> { pnlSColumn1, pnlSColumn2, pnlSColumn3, pnlSColumn4, pnlSColumn5, pnlSColumn6, pnlSColumn7 }, panelLabels);
+        }
+
+        /// <summary>
+        ///     When user decides to exit, an appropriate message is given
+        ///     So that the user is can make sure they want to leave and lose progress
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            var response = MessageBox.Show("You are about to leave your game.\nAll progress will be lost. Are you sure you want to leave?", "Warning!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+            if (response == DialogResult.No)
+            {
+                // Early return to remove the need for redundant itterations
+                return;
+            }
+            else
+            {
+                StartMenu sMenu = new StartMenu();
+                sMenu.Show();
+                this.ParentForm.Close();
+            }
+        }
+
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Resets game state
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnReset_Click(object sender, EventArgs e)
+        {
+            ClearAllLines();
+            Reset();
+            panelHelper.EnablePanels(firstColumnPanels, secondColumnPanels);
+        }
+
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     First panel mouse click event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void pnlFColumn_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                Panel clickedPanel = sender as Panel;
+
+                if (clickedPanel != null)
+                {
+                    ResetSelectedQuestionBackground();
+
+                    SetSelectedQuestion(clickedPanel);
+
+                    panelHelper.ReadyToSelectEffect(secondColumnPanels);
+
+                    SetLabelsInSecondColumnEnabledAndColor();
+                }
+            }
+        }
+
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Second panel mouse click event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void pnlSColumn_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left)
+            {
+                // Early return to remove redundant iterations
+                return;
+            }
+
+            Panel clickedPanel = sender as Panel;
+
+            if (clickedPanel == null)
+            {
+                return;
+            }
+
+            selectedAnswer = clickedPanel;
+
+            if (selectedQuestion == null || selectedAnswer == null)
+            {
+                return;
+            }
+
+            // Draw a line from the selected question to the selected answer
+            DrawLine(selectedQuestion, selectedAnswer, pnlDraw);
+
+            panelHelper.ClearGlowEffectFromAnswers(secondColumnPanels);
+
+            _ = sortingGame.PlaySound("Wink.mp3");
+
+            // Updating the dictionary to link the question to the answer
+            linkedQuestionsAnswers[selectedQuestion.Tag.ToString()] = selectedAnswer.Tag.ToString();
+
+            // Mark this question as having a line drawn
+            questionLineDrawn[selectedQuestion] = true;
+
+            // Disable both question and answer panels
+            DisableQuestionAndAnswer();
+
+            // Unselect both question and answer
+            panelHelper.SetQuestionBackground(selectedQuestion);
+
+            selectedQuestion = null;
+            selectedAnswer = null;
+
+            answerCounter++;
+
+            DisplayAnswersGiven();
+
+            AllAnswersComplete();
+        }
+
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Sets all panels line drawn to false on start
+        /// </summary>
+        private void SetLineDrawnState()
+        {
+            foreach (var panel in firstColumnPanels)
+            {
+                questionLineDrawn[panel] = false;
+            }
+        }
+
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///    Initialize the questionAnswerPairs list with questions and correct answers
+        /// </summary>
+        private void InitializeQuesitonAnswerPairs()
+        {
             questionAnswerPairs = new List<QuestionAnswerPair>
     {
         new QuestionAnswerPair("Computer Science, Information & general Works", "000"),
@@ -90,33 +359,9 @@ namespace DeweyDecimal_Latest
         pnlSColumn6,
         pnlSColumn7
     };
-            AttachMouseClickEventHandlers(firstColumnPanels, pnlFColumn_MouseClick);
-            AttachMouseClickEventHandlers(secondColumnPanels, pnlSColumn_MouseClick);
-
-
-            foreach (var panel in firstColumnPanels)
-            {
-                questionLineDrawn[panel] = false;
-            }
-
-            /* firstColumnItems = new List<string>();
-
-             for (int i = 0; i < firstColumnItems.Count; i++)
-             {
-                 var question = firstColumnItems[i];
-                 var answer = secondColumnItems[i];
-                 var pair = new QuestionAnswerPair(question, answer);
-                 questionAnswerPairs.Add(pair);
-             }*/
-            InitAreaBookData(); // Initialize AreaBookData
-            InitData();
         }
-
-        private void InitData()
-        {
-            InitColumnItems();
-        }
-
+        
+        // ----------------------------------------------------------------------------------------------------------- //
         /// <summary>
         ///     Initializes dictionairy storing the Dewey Decimal Calling Number and description
         /// </summary>
@@ -137,54 +382,91 @@ namespace DeweyDecimal_Latest
             };
         }
 
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Updates UI Timer
+        /// </summary>
+        private void UpdateUITimer()
+        {
+            if (lblTimer.InvokeRequired)
+            {
+                // We're on a different thread, so invoke the method to update the UI
+                lblTimer.Invoke(new Action(UpdateUITimer));
+            }
+            else
+            {
+                // We're on the UI thread, so update the lblTimer control directly
+                TimeSpan elapsedTime = TimeSpan.FromSeconds(elapsedTimeInSeconds);
+                lblTimer.Text = elapsedTime.ToString(@"hh\:mm\:ss");
+            }
+        }
+
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Initializing game timer
+        ///     Attatching Tick event as well
+        /// </summary>
+        private void InitializeTimer()
+        {
+            deweyTimer = new Class1(1000);
+            deweyTimer.Elapsed += matchColumnTimer_Tick;
+            deweyTimer.Start();
+        }
+
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Initializes the colum items on start or reset
+        /// </summary>
         private void InitColumnItems()
         {
-            // Define the items that should be displayed in the first column
+            // Defines items for first quesiton column
             List<string> itemsForFirstColumn;
 
-            // Randomly choose the matching scenario
-            matchDescriptionsToCallNumbers = new Random().Next(2) == 0; // 0 or 1
+            // Randomly chooses the matching game scenario - either call numbers as questions or descriptions
+            matchDescriptionsToCallNumbers = new Random().Next(2) == 0;
 
             if (matchDescriptionsToCallNumbers)
             {
-                // Matching descriptions to call numbers
+                // Descriptions to call numbers
                 itemsForFirstColumn = AreaBookData.Values.ToList();
             }
             else
             {
-                // Matching call numbers to descriptions
+                // Call numbers to descriptions
                 itemsForFirstColumn = AreaBookData.Keys.ToList();
             }
 
-            // Shuffle the list of items for the first column
+            // Shuffles the list of items for the first column
             itemsForFirstColumn = itemsForFirstColumn.OrderBy(x => Guid.NewGuid()).ToList();
 
             // Initialize the first column with 4 random items
             firstColumnItems = itemsForFirstColumn.Take(4).ToList();
 
-            // Initialize the second column with 7 possible answers (4 correct, 3 incorrect)
+            // Initializing the second column with 7 possible answers (4 correct, 3 incorrect)
             secondColumnItems = new List<string>();
+
+            // Defines the correct answers
             correctAnswers = new List<string>();
-            linkedQuestionsAnswers.Clear(); // Clear the dictionary
+            
+            linkedQuestionsAnswers.Clear();
 
             foreach (var item in firstColumnItems)
             {
                 if (matchDescriptionsToCallNumbers)
                 {
-                    // Use descriptions as questions
                     string callNumber = AreaBookData.First(kv => kv.Value == item).Key;
                     secondColumnItems.Add(callNumber);
 
-                    // Store the correct answer (description)
+                    // Storing the correct answer
                     correctAnswers.Add(item);
                 }
                 else
                 {
-                    // Use call numbers as questions
+                    // Using call numbers as questions
                     string description = AreaBookData[item];
                     secondColumnItems.Add(description);
 
-                    // Store the correct answer (description)
+                    // Storing correct answer
                     correctAnswers.Add(description);
                 }
 
@@ -192,7 +474,7 @@ namespace DeweyDecimal_Latest
                 linkedQuestionsAnswers.Add(item, string.Empty);
             }
 
-            // Add 3 incorrect items (exclude those used for correct answers)
+            // Adding 3 incorrect items
             var incorrectItems = matchDescriptionsToCallNumbers
                 ? AreaBookData.Keys.Except(secondColumnItems).OrderBy(x => Guid.NewGuid()).Take(3)
                 : AreaBookData.Values.Except(secondColumnItems).OrderBy(x => Guid.NewGuid()).Take(3);
@@ -203,215 +485,228 @@ namespace DeweyDecimal_Latest
             secondColumnItems = secondColumnItems.OrderBy(x => Guid.NewGuid()).ToList();
         }
 
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Customizes the drawing behaviour of the control, drawing lines between panels
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnPaint(PaintEventArgs e)
         {
+            // Calling the base class OnPaint method
             base.OnPaint(e);
 
+            // Creating a Pen for drawing lines
             using (Pen pen = new Pen(Color.Firebrick, 4))
             {
+                // Setting anti-aliasing mode for smoother lines
                 e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
                 foreach (var line in lines)
                 {
+                    // Iterating through the list of lines and draw each line using the specified pen
                     e.Graphics.DrawLine(pen, line.StartPoint, line.EndPoint);
                 }
             }
         }
-        private void CreateLabelsForColumn(List<string> items, List<Panel> columns)
-        {
-            for (int i = 0; i < items.Count && i < columns.Count; i++)
-            {
-                // Create labels within the specified column panel
-                Label label = new Label
-                {
-                    Text = items[i],
-                    AutoSize = true,
-                    ForeColor = Color.Black,
-                    Enabled = false,
-                    Dock = DockStyle.Top // Stacked vertically within the panel
-                };
-                columns[i].Tag = label.Text;
-                columns[i].Controls.Add(label);
-            }
-        }
-        private void ClearColumnPanels(Panel panel)
-        {
-            foreach (Control control in panel.Controls)
-            {
-                if (control is Panel)
-                {
-                    ClearColumnPanels((Panel)control); // Recursively clear nested panels
-                }
-                else
-                {
-                    panel.Controls.Remove(control);
-                    control.Dispose(); // Dispose of the label control
-                }
-            }
-        }
-        private void ClearLabelsFromColumnPanels(List<Panel> columns)
-        {
-            foreach (var column in columns)
-            {
-                foreach (Control control in column.Controls)
-                {
-                    if (control is Label)
-                    {
-                        column.Controls.Remove(control);
-                        control.Dispose(); // Dispose of the label control
-                    }
-                }
-            }
-        }
-        private void MatchColumn_Control_Load(object sender, EventArgs e)
-        {
-            InitAreaBookData();
-            InitColumnItems();
 
-
-            CreateLabelsForColumn(firstColumnItems, new List<Panel> { pnlFColumn1, pnlFColumn2, pnlFColumn3, pnlFColumn4 });
-
-            // Create labels for the second column panels
-            CreateLabelsForColumn(secondColumnItems, new List<Panel> { pnlSColumn1, pnlSColumn2, pnlSColumn3, pnlSColumn4, pnlSColumn5, pnlSColumn6, pnlSColumn7 });
-            AttachMouseClickEventHandlers(new List<Panel> { pnlFColumn1, pnlFColumn2, pnlFColumn3, pnlFColumn4 }, pnlFColumn_MouseClick);
-            AttachMouseClickEventHandlers(new List<Panel> { pnlSColumn1, pnlSColumn2, pnlSColumn3, pnlSColumn4, pnlSColumn5, pnlSColumn6, pnlSColumn7 }, pnlSColumn_MouseClick);
-        }
-        private void AttachMouseClickEventHandlers(List<Panel> panels, MouseEventHandler handler)
-        {
-            foreach (var panel in panels)
-            {
-                if (panel != null)
-                {
-                    panel.MouseClick += handler;
-                }
-            }
-        }
-
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Resets game to original state
+        /// </summary>
         private void Reset()
         {
+            answerCounter = 0;
 
-            // Reinitialize the column items
+            // Timer
+            elapsedTimeInSeconds = 0;
+            lblTimer.Text = "00:00:00";
+            deweyTimer.Stop();
+
+            //Lines
             questionsWithLinesDrawn = 0;
+
+            // Columns
             InitColumnItems();
 
+            // Colors
+            panelHelper.ResetQuestionPanelColor(firstColumnPanels);
+            panelHelper.ResetAnswerPanelColor(secondColumnPanels);
+
+            // Lists
             questionLineDrawn.Clear();
             linkedQuestionsAnswers.Clear();
+            panelHelper.ClearLabelsFromColumnPanels(new List<Panel> { pnlFColumn1, pnlFColumn2, pnlFColumn3, pnlFColumn4 });
+            panelHelper.ClearLabelsFromColumnPanels(new List<Panel> { pnlSColumn1, pnlSColumn2, pnlSColumn3, pnlSColumn4, pnlSColumn5, pnlSColumn6, pnlSColumn7 });
 
-            // Clear labels from all panels in the first column
-            ClearLabelsFromColumnPanels(new List<Panel> { pnlFColumn1, pnlFColumn2, pnlFColumn3, pnlFColumn4 });
+            // Labels
+            panelHelper.CreateLabelsForColumn(firstColumnItems, new List<Panel> { pnlFColumn1, pnlFColumn2, pnlFColumn3, pnlFColumn4 }, panelLabels);
+            panelHelper.CreateLabelsForColumn(secondColumnItems, new List<Panel> { pnlSColumn1, pnlSColumn2, pnlSColumn3, pnlSColumn4, pnlSColumn5, pnlSColumn6, pnlSColumn7 }, panelLabels);
 
-            // Clear labels from all panels in the second column
-            ClearLabelsFromColumnPanels(new List<Panel> { pnlSColumn1, pnlSColumn2, pnlSColumn3, pnlSColumn4, pnlSColumn5, pnlSColumn6, pnlSColumn7 });
-
-            // Recreate labels for the first and second column panels
-            CreateLabelsForColumn(firstColumnItems, new List<Panel> { pnlFColumn1, pnlFColumn2, pnlFColumn3, pnlFColumn4 });
-            CreateLabelsForColumn(secondColumnItems, new List<Panel> { pnlSColumn1, pnlSColumn2, pnlSColumn3, pnlSColumn4, pnlSColumn5, pnlSColumn6, pnlSColumn7 });
+            InitializeTimer();
         }
 
-        private void EnablePanels()
+       
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Sets the answer panel colors
+        /// </summary>
+        private void SetAnswerPanelColor()
         {
-            foreach (var panel in firstColumnPanels)
+            for (int i = 1; i <= 7; i++)
             {
-                panel.Enabled = true;
+                string pnlName = "pnlFColumn" + i.ToString();
+
+                // Finding the panel by its name
+                Panel panel = Controls.Find(pnlName, true).FirstOrDefault() as Panel;
+
+                if (panel != null)
+                {
+                    panel.BackColor = ColorTranslator.FromHtml("#ff943f");
+                }
             }
 
-            foreach (var panel in secondColumnPanels)
-            {
-                panel.Enabled = true;
-            }
         }
 
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Clears all lines drawn
+        /// </summary>
         private void ClearAllLines()
         {
             lines.Clear();
             pnlDraw.Invalidate(); // Trigger a repaint to remove the lines from the control
         }
-        private void btnReset_Click(object sender, EventArgs e)
-        {
-            ClearAllLines(); // Clear all lines
-            Reset();
-            EnablePanels();
-        }
 
-        private void pnlFColumn_MouseClick(object sender, MouseEventArgs e)
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Resets the selected questions color
+        /// </summary>
+        private void ResetSelectedQuestionBackground()
         {
-            if (e.Button == MouseButtons.Left)
+            if (selectedQuestion != null)
             {
-                Panel clickedPanel = sender as Panel;
-
-                if (clickedPanel != null)
-                {
-                    if (selectedQuestion != null)
-                    {
-                        selectedQuestion.BackColor = Color.LightGray;
-                    }
-
-                    selectedQuestion = clickedPanel;
-                    selectedQuestion.BackColor = Color.Green; // Set the selected question's color
-                    ApplyGlowEffectToAnswers();
-                }
+                selectedQuestion.BackColor = ColorTranslator.FromHtml("#3fa9ff");
             }
         }
 
-        private void pnlSColumn_MouseClick(object sender, MouseEventArgs e)
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Sets the selected question color
+        /// </summary>
+        /// <param name="clickedPanel"></param>
+        private void SetSelectedQuestion(Panel clickedPanel)
         {
-            if (e.Button == MouseButtons.Left)
+            selectedQuestion = clickedPanel;
+            selectedQuestion.BackColor = ColorTranslator.FromHtml("#90cdff");
+        }
+
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///  Sets answer panels color when question is clicked
+        /// </summary>
+        private void SetLabelsInSecondColumnEnabledAndColor()
+        {
+            foreach (var panel in secondColumnPanels)
             {
-                // Check if an answer is selected
-                Panel clickedPanel = sender as Panel;
-
-                if (clickedPanel != null)
+                foreach (Control control in panel.Controls)
                 {
-                    // If an answer is already selected, unselect it
-                    selectedAnswer = clickedPanel;
-
-                    // Check if both question and answer are selected
-                    if (selectedQuestion != null && selectedAnswer != null)
+                    if (control is Label label)
                     {
-                        // Draw a line from the selected question to the selected answer
-                        DrawLine(selectedQuestion, selectedAnswer);
-
-                        ClearGlowEffectFromAnswers();
-
-                        
-
-                        // Update the dictionary to link the question to the answer
-                        // For example, you can use the question's text as the key and the answer's text as the value
-                        linkedQuestionsAnswers[selectedQuestion.Tag.ToString()] = selectedAnswer.Tag.ToString();
-
-                        // Mark this question as having a line drawn
-                        questionLineDrawn[selectedQuestion] = true;
-
-                        // Disable both question and answer panels
-                        selectedQuestion.Enabled = false;
-                        selectedAnswer.Enabled = false;
-
-                        // Unselect both question and answer
-                        selectedAnswer.BackColor = Color.DimGray;
-                        selectedQuestion.BackColor = Color.DimGray;
-                        selectedQuestion = null;
-                        selectedAnswer = null;
-
-                        // questionsWithLinesDrawn++;
-                        if (questionsWithLinesDrawn == 4)
-                        {
-                            CheckAnswers();
-                            return;
-                        }
+                        //label.Enabled = true;
+                        label.ForeColor = Color.White;
                     }
                 }
             }
         }
+       
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Draws line from question panel to answer panel
+        /// </summary>
+        /// <param name="startPanel"></param>
+        /// <param name="endPanel"></param>
+        public void DrawLine(Panel startPanel, Panel endPanel, Panel pnlDraw)
+        {
+            using (Graphics g = pnlDraw.CreateGraphics())
+            using (LinearGradientBrush brush = new LinearGradientBrush(startPanel.Location, endPanel.Location, Color.White, Color.Black))
+            using (Pen pen = new Pen(Color.White, 4))
+            {
+                // Smoothing the line drawn
+                g.SmoothingMode = SmoothingMode.AntiAlias;
+
+                Point startPoint = new Point(startPanel.Right, startPanel.Top + startPanel.Height / 2);
+                Point endPoint = new Point(endPanel.Left, endPanel.Top + endPanel.Height / 2);
+
+                // Draw the line
+                g.DrawLine(pen, startPoint, endPoint);
+
+                // Calculating arrowhead points
+                float arrowSize = 20;
+                float angle = (float)Math.Atan2(endPoint.Y - startPoint.Y, endPoint.X - startPoint.X);
+                PointF arrow1 = new PointF(endPoint.X - arrowSize * (float)Math.Cos(angle - Math.PI / 6), endPoint.Y - arrowSize * (float)Math.Sin(angle - Math.PI / 6));
+                PointF arrow2 = new PointF(endPoint.X - arrowSize * (float)Math.Cos(angle + Math.PI / 6), endPoint.Y - arrowSize * (float)Math.Sin(angle + Math.PI / 6));
+
+                // Draw the arrowhead
+                g.DrawLine(pen, endPoint, arrow1);
+                g.DrawLine(pen, endPoint, arrow2);
+
+                // Increment the counter
+                this.questionsWithLinesDrawn++;
+
+                // Storing the line
+                lines.Add(new Line(startPoint, endPoint));
+            }
+        }
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Check measure to see if user has answered all questions
+        /// </summary>
+        private void AllAnswersComplete() 
+        {
+            if (questionsWithLinesDrawn == 4)
+            {
+                CheckAnswers();
+                btnNewGame.Enabled = true;
+                btnNewGame.Visible = true;
+                return;
+            }
+        }
+
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Displays the number of answers completed by the user
+        /// </summary>
+        private void DisplayAnswersGiven()
+        {
+            lblAnswerCounter.Text = answerCounter + "/4";
+        }
+
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Disables the question and answer panels after they are chosen
+        /// </summary>
+        private void DisableQuestionAndAnswer()
+        {
+            selectedQuestion.Enabled = false;
+            selectedAnswer.Enabled = false;
+        }
+
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Validates users' answers
+        /// </summary>
         private void CheckAnswers()
         {
-            int correctCount = 0;
-            int totalQuestions = firstColumnItems.Count;
+            var correctCount = 0;
+            var totalQuestions = firstColumnItems.Count;
+            
+            deweyTimer.Stop();
             
 
             for (int i = 0; i < firstColumnItems.Count; i++)
             {
-                string questionText = firstColumnItems[i];
-                string selectedAnswerText = linkedQuestionsAnswers[questionText];
+                var questionText = firstColumnItems[i];
+                var selectedAnswerText = linkedQuestionsAnswers[questionText];
                 string correctAnswerText;
 
                 if (matchDescriptionsToCallNumbers)
@@ -431,71 +726,83 @@ namespace DeweyDecimal_Latest
                 }
             }
 
-            UpdateUserScore(correctCount);
-            
 
-            string message = $"You answered {correctCount} out of {totalQuestions} questions correctly.";
+            SetPersonalBest(correctCount);
+
+            DisplayResultsMessage(correctCount, totalQuestions);
+            
+            deweyTimer.Stop();
+
+            lblAnswerCounter.Text = "/4";
+        }
+
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Sets the users' personal best score only if they have successfully managed to get all questions correct
+        /// </summary>
+        /// <param name="correctCount"></param>
+        private void SetPersonalBest(int correctCount)
+        {
+            if ((correctCount == 4) && (TimeSpan.FromSeconds(elapsedTimeInSeconds) < fastestTime))
+            {
+                fastestTime = TimeSpan.FromSeconds(elapsedTimeInSeconds);
+            }
+
+            lblFastestTime.Text = "Personal Best: " + fastestTime.ToString();
+
+        }
+
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Displays an appropriate results message after completion
+        /// </summary>
+        /// <param name="corrCount"></param>
+        /// <param name="totalQuestions"></param>
+        private void DisplayResultsMessage(int corrCount, int totalQuestions)
+        {
+           var message = $"You answered {corrCount} out of {totalQuestions} questions correctly.";
             MessageBox.Show(message, "Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void UpdateUserScore(int numCorrect)
+        // ------------------------------------------------------------------ //
+        /// <summary>
+        ///     Executes on every timer tick execution
+        ///     It updates the lblTimer to display the current time
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void matchColumnTimer_Tick(object sender, EventArgs e)
         {
-            
-            if (numCorrect == 5)
+            elapsedTimeInSeconds++;
+
+            if (!IsHandleCreated)
             {
-                totalPoints += numCorrect * 5;
-                lblPoints.Text = "Points: " + totalPoints.ToString();
+                // Stoping the timer once the form is closed
+                matchColumnTimer.Stop();
+
+                // Early return to remove redundant itterations
+                return;
+            }
+
+            if (lblTimer.InvokeRequired)
+            {
+                lblTimer.Invoke(new Action(() => lblTimer.Text = TimeSpan.FromSeconds(elapsedTimeInSeconds).ToString()));
+            }
+            else
+            {
+                lblTimer.Text = TimeSpan.FromSeconds(elapsedTimeInSeconds).ToString();
             }
         }
 
-
-
-
-
-
-        private void DrawLine(Panel startPanel, Panel endPanel)
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     On Mouse Over event for new game button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnNewGame_MouseHover(object sender, EventArgs e)
         {
-            using (Graphics g = pnlDraw.CreateGraphics())
-            using (LinearGradientBrush brush = new LinearGradientBrush(startPanel.Location, endPanel.Location, Color.Firebrick, Color.DarkRed))
-            using (Pen pen = new Pen(brush, 4))
-            {
-                // Smoothing the line drawn
-                g.SmoothingMode = SmoothingMode.AntiAlias;
-
-                Point startPoint = new Point(startPanel.Right, startPanel.Top + startPanel.Height / 2);
-                Point endPoint = new Point(endPanel.Left, endPanel.Top + endPanel.Height / 2);
-
-                // Draw the line
-                g.DrawLine(pen, startPoint, endPoint);
-
-                // Increment the counter
-                questionsWithLinesDrawn++;
-
-                // Store the line
-                lines.Add(new Line(startPoint, endPoint));
-            }
+            panelHelper.CreateToolTip(btnNewGame, "New Game");
         }
-
-        private void ApplyGlowEffectToAnswers()
-        {
-            foreach (var panel in secondColumnPanels)
-            {
-                // Check if the panel is not the selected answer
-                if (panel != selectedAnswer)
-                {
-                    // Apply the glow effect (e.g., change background color to a lighter color)
-                    panel.BackColor = Color.LightBlue;
-                }
-            }
-        }
-        private void ClearGlowEffectFromAnswers()
-        {
-            foreach (var panel in secondColumnPanels)
-            {
-                // Clear the glow effect
-                panel.BackColor = Color.DimGray;
-            }
-        }
-
     }
-}
+}// --------------------------------- .....ooooo00000 END OF FILE 00000ooooo..... --------------------------------- //

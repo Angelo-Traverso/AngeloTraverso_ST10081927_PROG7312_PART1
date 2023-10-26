@@ -33,8 +33,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AxInterop.WMPLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WMPLib.1.0.0\lib\AxInterop.WMPLib.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Control.Draggable, Version=1.0.5049.269, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Control.Draggable.1.0.5049.269\lib\net35-Client\Control.Draggable.dll</HintPath>
+    </Reference>
+    <Reference Include="Interop.WMPLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WMPLib.1.0.0\lib\Interop.WMPLib.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -76,6 +84,7 @@
     </Compile>
     <Compile Include="Models\Line.cs" />
     <Compile Include="Models\QuestionAnswerPair.cs" />
+    <Compile Include="PanelHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SortingGame.cs">
@@ -98,6 +107,12 @@
       <DependentUpon>StartMenuControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Statistics.cs" />
+    <Compile Include="StartPlaying.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StartPlaying.Designer.cs">
+      <DependentUpon>StartPlaying.cs</DependentUpon>
+    </Compile>
     <Compile Include="StatisticsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -127,6 +142,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="SortingGame.resx">
       <DependentUpon>SortingGame.cs</DependentUpon>
@@ -136,6 +152,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="StartMenuControl.resx">
       <DependentUpon>StartMenuControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StartPlaying.resx">
+      <DependentUpon>StartPlaying.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StatisticsControl.resx">
       <DependentUpon>StatisticsControl.cs</DependentUpon>
@@ -169,12 +188,22 @@
     <Content Include="bin\Debug\Images\BackgroundRoom.jpg" />
     <Content Include="bin\Debug\Images\BookShelfNew.png" />
     <Content Include="bin\Debug\Images\MenuBackground.jpg" />
+    <Content Include="bin\Debug\Images\pause-button.png" />
     <Content Include="bin\Debug\Images\WhiteBack.png" />
     <Content Include="bin\Debug\Media\lose.mp3" />
     <Content Include="bin\Debug\Media\Piano.mp3" />
     <Content Include="bin\Debug\Media\pickup.mp3" />
     <Content Include="bin\Debug\Media\Success.mp3" />
     <Content Include="bin\Debug\Media\Wink.mp3" />
+    <None Include="Resources\play.png" />
+    <None Include="Resources\exit.png" />
+    <None Include="Resources\Back.png" />
+    <None Include="Resources\help.png" />
+    <None Include="Resources\BackArrow.png" />
+    <None Include="Resources\reset.png" />
+    <None Include="Resources\return-arrow.png" />
+    <None Include="Resources\bookSpine.png" />
+    <None Include="Resources\pause-button.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TimerLib\TimerLib.csproj">

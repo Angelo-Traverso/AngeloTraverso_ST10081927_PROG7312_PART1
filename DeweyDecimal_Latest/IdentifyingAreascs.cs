@@ -1,20 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿/*
+ *  Full Name: Angelo Traverso
+ *  Student Number: ST10081927
+ *  Subject: Programming 3B
+ *  Code: PROG7312
+ */
+
 using System.Windows.Forms;
 
 namespace DeweyDecimal_Latest
 {
     public partial class IdentifyingAreascs : Form
     {
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Default Constructor
+        /// </summary>
         public IdentifyingAreascs()
         {
             InitializeComponent();
+            HandleWindowState();
+        }
+
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Removes maximise and minimize boxes
+        /// </summary>
+        private void HandleWindowState()
+        {
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+        }
+
+        private void IdentifyingAreascs_FormClosed(object sender, FormClosedEventArgs e)
+        {
         }
     }
 }
+// --------------------------------- .....ooooo00000 END OF FILE 00000ooooo..... --------------------------------- //

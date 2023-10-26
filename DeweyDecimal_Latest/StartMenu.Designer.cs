@@ -50,7 +50,7 @@
             // btnFindCallNumbers
             // 
             this.btnFindCallNumbers.Enabled = false;
-            this.btnFindCallNumbers.Location = new System.Drawing.Point(194, 275);
+            this.btnFindCallNumbers.Location = new System.Drawing.Point(194, 285);
             this.btnFindCallNumbers.Name = "btnFindCallNumbers";
             this.btnFindCallNumbers.Size = new System.Drawing.Size(164, 29);
             this.btnFindCallNumbers.TabIndex = 6;
@@ -59,13 +59,16 @@
             // 
             // btnIdentifyAreas
             // 
+            this.btnIdentifyAreas.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(148)))), ((int)(((byte)(63)))));
+            this.btnIdentifyAreas.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnIdentifyAreas.Location = new System.Drawing.Point(194, 227);
             this.btnIdentifyAreas.Name = "btnIdentifyAreas";
-            this.btnIdentifyAreas.Size = new System.Drawing.Size(164, 32);
+            this.btnIdentifyAreas.Size = new System.Drawing.Size(164, 44);
             this.btnIdentifyAreas.TabIndex = 5;
             this.btnIdentifyAreas.Text = "Identify Area";
-            this.btnIdentifyAreas.UseVisualStyleBackColor = true;
+            this.btnIdentifyAreas.UseVisualStyleBackColor = false;
             this.btnIdentifyAreas.Click += new System.EventHandler(this.btnIdentifyAreas_Click);
+            this.btnIdentifyAreas.MouseHover += new System.EventHandler(this.btnIdentifyAreas_MouseHover);
             // 
             // btnReplaceBooks
             // 
@@ -79,10 +82,11 @@
             this.btnReplaceBooks.Text = "Replace Books";
             this.btnReplaceBooks.UseVisualStyleBackColor = false;
             this.btnReplaceBooks.Click += new System.EventHandler(this.btnReplaceBooks_Click);
+            this.btnReplaceBooks.MouseHover += new System.EventHandler(this.btnReplaceBooks_MouseHover);
             // 
             // btnExit
             // 
-            this.btnExit.Location = new System.Drawing.Point(194, 319);
+            this.btnExit.Location = new System.Drawing.Point(194, 329);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(164, 30);
             this.btnExit.TabIndex = 8;

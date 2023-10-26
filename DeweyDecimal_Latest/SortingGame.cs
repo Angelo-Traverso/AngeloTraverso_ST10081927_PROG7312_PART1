@@ -403,7 +403,7 @@ namespace DeweyDecimal_Latest
         ///     Method to play a sound, url path is passed so that the method is dynamic
         /// </summary>
         /// <param name="url"></param>
-        private async Task PlaySound(string url)
+        public async Task PlaySound(string url)
         {
             await Task.Run(() =>
             {
