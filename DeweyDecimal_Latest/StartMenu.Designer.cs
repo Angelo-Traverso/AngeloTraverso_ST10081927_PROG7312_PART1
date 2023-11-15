@@ -49,13 +49,13 @@
             // 
             // btnFindCallNumbers
             // 
-            this.btnFindCallNumbers.Enabled = false;
             this.btnFindCallNumbers.Location = new System.Drawing.Point(194, 285);
             this.btnFindCallNumbers.Name = "btnFindCallNumbers";
             this.btnFindCallNumbers.Size = new System.Drawing.Size(164, 29);
             this.btnFindCallNumbers.TabIndex = 6;
             this.btnFindCallNumbers.Text = "Find Call Numbers";
             this.btnFindCallNumbers.UseVisualStyleBackColor = true;
+            this.btnFindCallNumbers.Click += new System.EventHandler(this.btnFindCallNumbers_Click);
             // 
             // btnIdentifyAreas
             // 
