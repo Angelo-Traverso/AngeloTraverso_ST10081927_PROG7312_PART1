@@ -248,7 +248,14 @@
     <Content Include="bin\Debug\Media\Piano.mp3" />
     <Content Include="bin\Debug\Media\pickup.mp3" />
     <Content Include="bin\Debug\Media\Success.mp3" />
+    <Content Include="bin\Debug\Media\violinLose.mp3" />
     <Content Include="bin\Debug\Media\Wink.mp3" />
+    <None Include="Resources\lives.png" />
+    <None Include="Resources\WhiteBack.png" />
+    <None Include="Resources\BookShelfNew.png" />
+    <None Include="Resources\QuestionMark.png" />
+    <None Include="Resources\question.png" />
+    <None Include="Resources\question-fill.png" />
     <None Include="Resources\play.png" />
     <None Include="Resources\exit.png" />
     <None Include="Resources\Back.png" />

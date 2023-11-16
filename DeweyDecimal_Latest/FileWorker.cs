@@ -1,6 +1,7 @@
 ﻿using DeweyDecimal_Latest.Models;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,11 +13,12 @@ namespace DeweyDecimal_Latest
 {
     public class FileWorker
     {
-
+        public event EventHandler LifeLost;
+        public event EventHandler gameReset;
+        public int gamesPlayed = 0;
         private string file_path = @"DDResources\\DeweyDecimalValues.csv";
         RedBlackTree deweyTree = new RedBlackTree();
         private Node correctAnswerNode;
-        string correctClassNum = string.Empty;
         private List<Node> options;
         private List<Label> optionLabels; // Store the labels for later comparison
         private Panel[] optionPanels; // Declare optionPanels as a class-level field
@@ -25,6 +27,8 @@ namespace DeweyDecimal_Latest
         private string firstQuestion;
         private Node answerFound;
         private SoundPlayer soundPlayer = new SoundPlayer();
+        public int livesLeft = 3;
+
         public void ReadFromFile()
         {
             using (StreamReader reader = new StreamReader(file_path))
@@ -53,6 +57,44 @@ namespace DeweyDecimal_Latest
             }
         }
 
+        private void OnLifeLost()
+        {
+            LifeLost?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void OnGameReset()
+        { 
+            gameReset?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void ResetGame()
+        {
+            // Invoking Listener so that actions can be performed when the game is reset
+            OnGameReset();
+
+            // Reset the current level to 1
+            currrentLevel = 1;
+
+            livesLeft = 3;
+
+            // Clear the labels and options
+            lblQuestion.Text = string.Empty;
+
+            foreach (var panel in optionPanels)
+            {
+                panel.Click -= Panel_Click;
+                panel.MouseEnter -= Panel_MouseEnter;
+                panel.MouseLeave -= Panel_MouseLeave;
+                panel.Controls.Clear();
+                panel.Tag = null;
+            }
+
+            optionLabels.Clear();
+            options.Clear();
+
+            // Generate a new question for the first level
+            DisplayQuestion(optionPanels, lblQuestion);
+        }
         // ----------------------------------------------------------------------------------------------------------- //
         /// <summary>
         ///     Splits the csv lines at each ';' and ensures '""' is counted as a whole string
@@ -120,7 +162,7 @@ namespace DeweyDecimal_Latest
             optionLabels = new List<Label>();
 
             // Display the question
-            lblQuestion.Text = $"Question: {correctAnswerNode.DeweyData.Description}, {correctAnswerNode.DeweyData.ClassNumber}";
+            lblQuestion.Text = $"{correctAnswerNode.DeweyData.ClassNumber} - {correctAnswerNode.DeweyData.Description}";
             //firstQuestionAnswer = correctAnswerNode.DeweyData.Description;
             firstQuestion = correctAnswerNode.DeweyData.ClassNumber;
             correctAnswerNode = GetAnswerNode(correctAnswerNode.DeweyData);
@@ -138,8 +180,13 @@ namespace DeweyDecimal_Latest
                 // Create a new label for each option
                 Label lblOption = new Label
                 {
-                    AutoSize = true,
+                    AutoSize = false,
+                    Width = 160,
+                    Height = 55,
                     Text = $"{options[i].DeweyData.ClassNumber} - {options[i].DeweyData.Description}",
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    Font = new Font("Arial", 10, FontStyle.Regular),
+                    //callNumberLabel.Font = new Font("Arial", 8, FontStyle.Regular);
                     Tag = options[i], // Set the Tag property with the node
                     Enabled = false // Enable the label initially
                 };
@@ -172,6 +219,8 @@ namespace DeweyDecimal_Latest
         {
             // Handle the click event for all panels
             Panel clickedPanel = sender as Panel;
+
+            Console.WriteLine("Clicked!");
             _ = PlaySound("Wink.mp3");
             // Check if the panel's tag is a Node
             if (clickedPanel.Tag is Node selectedNode)
@@ -185,12 +234,13 @@ namespace DeweyDecimal_Latest
                     if (isCorrect)
                     {
                         currrentLevel++;
-                        MessageBox.Show("Well done! Moving to round 2...");
+                        MessageBox.Show("Well done! Moving to round 2...", "Correct", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         UpdateOptionsForLevel2();
                         return;
                     }
                     else
                     {
+                        HandleLives();
                         MessageBox.Show("Wrong answer! Try again...");
                         // NEED TO ADD INCORRECT ANSWER GAMIFICATION
                     }
@@ -202,15 +252,15 @@ namespace DeweyDecimal_Latest
                     if (isCorrect)
                     {
                         currrentLevel++;
-                        MessageBox.Show("Well done! Moving to round 3...");
+                        MessageBox.Show("That was too easy!\nTaking you to the last round...", "Correct", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         UpdateOptionsForLevel3(selectedNode);
                         return;
                     }
                     else
                     {
-                        MessageBox.Show("Incorrect second level...");
+                        HandleLives();
+                        MessageBox.Show("Whoops, wrong answer...", "Incorrect", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
-                   
                 }
 
                 if (currrentLevel == 3)
@@ -218,20 +268,34 @@ namespace DeweyDecimal_Latest
                     bool isCorrect = ValidateUserAnswer3rdLevel(selectedNode);
                     if (isCorrect)
                     {
-                        currrentLevel = 0;
-                        MessageBox.Show("Congrates your a wizard");
+                        MessageBox.Show("It looks like you know your dewey decimal classifications!", "Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        gamesPlayed += 1;
+                        ResetGame();
+                        return;
                         // Call reset game here
                     }
                     else
                     {
-                        MessageBox.Show("Incorrect 3rd level...");
+                        HandleLives();
+                        MessageBox.Show("No more lives left...");
                     }
-
                 }
             }
         }
+        private void HandleLives()
+        {
+            if (livesLeft > 0)
+            {
+                livesLeft -= 1;
+                OnLifeLost();
+            }
 
-
+            if (livesLeft == 0)
+            {
+                _ = PlaySound("violinLose.mp3");
+                ResetGame();
+            }
+        }
 
         // ----------------------------------------------------------------------------------------------------------- //
         /// <summary>
