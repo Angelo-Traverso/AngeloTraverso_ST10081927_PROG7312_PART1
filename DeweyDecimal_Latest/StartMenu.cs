@@ -105,9 +105,10 @@ namespace DeweyDecimal_Latest
         private void btnFindCallNumbers_Click(object sender, EventArgs e)
         {
             //FileWorker fileWorker = new FileWorker();
-            var deweyGame = new FileWorker();
-            /*deweyGame.ReadFromFile();*/
-           // deweyGame.ReadFromFile();
+            FindCallNumbersGame game = new FindCallNumbersGame();
+            game.Show();
+            this.Hide();
+            // deweyGame.ReadFromFile();
         }
     }
 }

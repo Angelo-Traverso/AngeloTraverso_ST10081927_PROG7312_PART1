@@ -87,17 +87,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileWorker.cs" />
-    <Compile Include="FindingCallNumberControl.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="FindCallNumbersGame.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FindingCallNumberControl.Designer.cs">
-      <DependentUpon>FindingCallNumberControl.cs</DependentUpon>
+    <Compile Include="FindCallNumbersGame.Designer.cs">
+      <DependentUpon>FindCallNumbersGame.cs</DependentUpon>
     </Compile>
     <Compile Include="FindingCallNumbersQuiz.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FindingCallNumbersQuiz.Designer.cs">
       <DependentUpon>FindingCallNumbersQuiz.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FindingCallNumberTreeControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FindingCallNumberTreeControl.Designer.cs">
+      <DependentUpon>FindingCallNumberTreeControl.cs</DependentUpon>
     </Compile>
     <Compile Include="IdentifyingAreascs.cs">
       <SubType>Form</SubType>
@@ -126,6 +132,7 @@
     <Compile Include="PanelHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RedBlackTree.cs" />
     <Compile Include="SortingGame.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -165,8 +172,11 @@
       <DependentUpon>StatisticsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="TreeNode.cs" />
-    <EmbeddedResource Include="FindingCallNumberControl.resx">
-      <DependentUpon>FindingCallNumberControl.cs</DependentUpon>
+    <EmbeddedResource Include="FindCallNumbersGame.resx">
+      <DependentUpon>FindCallNumbersGame.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FindingCallNumberTreeControl.resx">
+      <DependentUpon>FindingCallNumberTreeControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
@@ -206,7 +216,7 @@
       <DependentUpon>StatisticsForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="bin\Debug\DeweyDecimal_Latest.exe.config" />
-    <None Include="bin\Debug\Resources\DeweyDecimalValues.csv" />
+    <None Include="bin\Debug\DDResources\DeweyDecimalValues.csv" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

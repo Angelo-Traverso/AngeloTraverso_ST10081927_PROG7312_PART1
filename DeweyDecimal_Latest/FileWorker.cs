@@ -1,227 +1,526 @@
-﻿using CSharpTree;
-using CsvHelper;
-using DeweyDecimal_Latest.Models;
+﻿using DeweyDecimal_Latest.Models;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using TressSampleApplication.Classes;
+using static TressSampleApplication.Classes.RedBlackTree;
 
 namespace DeweyDecimal_Latest
 {
     public class FileWorker
     {
-        public class DeweyTreeNode : TreeNode<string>
-        {
-            public DeweyTreeNode(string data) : base(data)
-            {
-            }
-        }
-        private DeweyTreeNode root;
-        private string filePath = @"Resources\\DeweyDecimalValues.csv";
-        private Random random = new Random();
-        private List<DeweyModel> deweyData;
 
-        public FileWorker()
-        {
-            // Initialize the root node
-            root = new DeweyTreeNode("Dewey Decimal Classification");
-            ReadFromFile();
-           // LoadDeweyData();
-            //ReadFromFileCSV();
-        }
-
+        private string file_path = @"DDResources\\DeweyDecimalValues.csv";
+        RedBlackTree deweyTree = new RedBlackTree();
+        private Node correctAnswerNode;
+        string correctClassNum = string.Empty;
+        private List<Node> options;
+        private List<Label> optionLabels; // Store the labels for later comparison
+        private Panel[] optionPanels; // Declare optionPanels as a class-level field
+        private Label lblQuestion; // Dec
+        private int currrentLevel = 1;
+        private string firstQuestion;
+        private Node answerFound;
+        private SoundPlayer soundPlayer = new SoundPlayer();
         public void ReadFromFile()
         {
-            try
+            using (StreamReader reader = new StreamReader(file_path))
             {
-                using (StreamReader reader = new StreamReader(filePath))
+                // Skip the header line
+                reader.ReadLine();
+
+                string line;
+                while ((line = reader.ReadLine()) != null)
                 {
-                    while (!reader.EndOfStream)
+                    string[] parts = SplitCsvLine(line);
+
+                    if (parts.Length == 3)
                     {
-                        string line = reader.ReadLine();
-                        if (!string.IsNullOrEmpty(line))
+                        DeweyModel deweyModel = new DeweyModel
                         {
-                            string[] values = line.Split(';');
+                            ClassNumber = parts[0].Trim(),
+                            Description = parts[1].Trim(),
+                            Level = int.Parse(parts[2].Trim())
+                        };
 
-                            if (values.Length >= 3)
-                            {
-                                string deweyClass = values[0].Trim();
-                                string caption = values[1].Trim();
-                                string levelStr = values[2].Trim();
-
-                                if (int.TryParse(levelStr, out int level))
-                                {
-                                    // Find or create the parent node based on the level
-                                    var parentNode = root.FindTreeNode(node => node.Level == level - 1);
-
-                                    // Add the current node to the tree
-                                    var currentNode = parentNode.AddChild($"{deweyClass} - {caption}");
-                                }
-                                else
-                                {
-                                    Console.WriteLine($"Skipped line. Error parsing level. Invalid format: {line}");
-                                }
-                            }
-                        }
+                        deweyTree.Insert(deweyModel);
                     }
                 }
-
-                // Print the Dewey Decimal Tree to the console with indentation
-                PrintDeweyTree(root, 0);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error reading the CSV file: {ex.Message}");
+                deweyTree.DisplayTree();
             }
         }
 
-        private void LoadDeweyData()
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Splits the csv lines at each ';' and ensures '""' is counted as a whole string
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        private string[] SplitCsvLine(string line)
         {
-            try
+            // Split the line, considering quoted strings and semicolons
+            string[] parts = line.Split(';');
+
+            for (int i = 0; i < parts.Length; i++)
             {
-                using (var reader = new StreamReader(filePath))
-                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                // Remove leading and trailing spaces
+                parts[i] = parts[i].Trim();
+
+                // Remove surrounding quotes if present
+                if (parts[i].StartsWith("\"") && parts[i].EndsWith("\""))
                 {
-                    deweyData = csv.GetRecords<DeweyModel>().ToList();
+                    parts[i] = parts[i].Substring(1, parts[i].Length - 2);
                 }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error loading Dewey Decimal data: {ex.Message}");
-            }
-        }
-        private void PrintDeweyTree(TreeNode<string> node, int indent)
-        {
-            Console.WriteLine($"{new string(' ', indent * 2)}{node.Data}");
 
-            foreach (var child in node.Children)
-            {
-                PrintDeweyTree(child, indent + 1);
-            }
+            return parts;
         }
 
-        public void FindingCallNumbersTask()
+        // ----------------------------------------------------------------------------------------------------------- //
+        public void DisplayQuestion(Panel[] optionPanels, Label lblQuestion)
         {
-            Console.WriteLine("Finding Call Numbers Task");
-            Console.WriteLine("Press any key to start the quiz...");
-            Console.ReadKey();
 
-            // Start the quiz
-            RunQuiz(root);
-        }
+            this.optionPanels = optionPanels;
+            this.lblQuestion = lblQuestion;
+            // Get a random third-level node
+            string firstLevel = "100";
+            correctAnswerNode = GetRandomThirdLevelEntry(out firstLevel);
 
-        private void RunQuiz(TreeNode<string> currentNode)
-        {
-            // Get a random third-level entry
-            var thirdLevelNode = GetRandomThirdLevelNode(currentNode);
 
-            // Display the quiz question
-            Console.WriteLine($"Quiz Question: {thirdLevelNode.Data}");
+            // Get all first-level options
+            var topLevelOptions = GetTopLevelOptions();
+            Shuffle(topLevelOptions);
 
-            // Display the options
-            var options = GetQuizOptions(thirdLevelNode);
-            for (int i = 0; i < options.Count; i++)
+            // Select the correct first level
+            string correctFirstLevel = correctAnswerNode.DeweyData.ClassNumber.Substring(0, 1) + "00";
+
+            // Filter first-level options to get only the nodes with the correct first level
+            List<Node> correctFirstLevelOptions = topLevelOptions
+                .Where(node => node.DeweyData.ClassNumber.StartsWith(correctFirstLevel))
+                .ToList();
+
+            // Shuffle and take three random incorrect options
+            List<Node> incorrectOptions = topLevelOptions
+                .Except(correctFirstLevelOptions)
+                .OrderBy(_ => Guid.NewGuid())
+                .Take(3)
+                .ToList();
+
+            // Combine correct and incorrect options
+            options = new List<Node>(correctFirstLevelOptions);
+            options.AddRange(incorrectOptions);
+
+            // Randomising the combined options
+            Shuffle(options);
+
+            // Initialize the list to store labels
+            optionLabels = new List<Label>();
+
+            // Display the question
+            lblQuestion.Text = $"Question: {correctAnswerNode.DeweyData.Description}, {correctAnswerNode.DeweyData.ClassNumber}";
+            //firstQuestionAnswer = correctAnswerNode.DeweyData.Description;
+            firstQuestion = correctAnswerNode.DeweyData.ClassNumber;
+            correctAnswerNode = GetAnswerNode(correctAnswerNode.DeweyData);
+
+            // Display the options in each panel
+            for (int i = 0; i < optionPanels.Length; i++)
             {
-                Console.WriteLine($"{i + 1}. {options[i]}");
-            }
+                Panel panel = optionPanels[i];
+                panel.Click += Panel_Click;
+                panel.MouseEnter += Panel_MouseEnter;
+                panel.MouseLeave += Panel_MouseLeave;
+                panel.BringToFront();
+                panel.Tag = options[i];
 
-            // Get user input (simulate user selecting an option)
-            Console.Write("Select an option (1-4): ");
-            int userChoice = Convert.ToInt32(Console.ReadLine());
-
-            // Check user's choice
-            if (userChoice >= 1 && userChoice <= 4)
-            {
-                // Get the selected option
-                var selectedOption = options[userChoice - 1];
-
-                // Check if the selected option is correct
-                if (selectedOption == thirdLevelNode.Parent?.Data)
+                // Create a new label for each option
+                Label lblOption = new Label
                 {
-                    Console.WriteLine("Correct! Moving to the next level...");
-                    // Recursively call the quiz for the next level
-                    RunQuiz(thirdLevelNode);
-                }
-                else
-                {
-                    Console.WriteLine($"Incorrect! The correct answer is: {thirdLevelNode.Parent?.Data}");
-                    // Implement logic to handle incorrect answers and move to the next question
-                }
-            }
-            else
-            {
-                Console.WriteLine("Invalid choice. Please select a number between 1 and 4.");
+                    AutoSize = true,
+                    Text = $"{options[i].DeweyData.ClassNumber} - {options[i].DeweyData.Description}",
+                    Tag = options[i], // Set the Tag property with the node
+                    Enabled = false // Enable the label initially
+                };
+
+                // Add the label to the panel
+                panel.Controls.Add(lblOption);
+
+                // Add the label to the list
+                optionLabels.Add(lblOption);
             }
         }
-
-        private DeweyTreeNode GetRandomThirdLevelNode(TreeNode<string> rootNode)
+        private void Panel_MouseEnter(object sender, EventArgs e)
         {
-            // Filter third-level nodes
-            var thirdLevelNodes = new List<DeweyTreeNode>();
-            foreach (var child in rootNode.Children)
+            // Change the cursor to a grabbing hand when the mouse enters the panel
+            (sender as Panel).Cursor = Cursors.Hand;
+        }
+
+        private void Panel_MouseLeave(object sender, EventArgs e)
+        {
+            // Change the cursor back to the default when the mouse leaves the panel
+            (sender as Panel).Cursor = Cursors.Default;
+        }
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Click events for all option panels
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Panel_Click(object sender, EventArgs e)
+        {
+            // Handle the click event for all panels
+            Panel clickedPanel = sender as Panel;
+            _ = PlaySound("Wink.mp3");
+            // Check if the panel's tag is a Node
+            if (clickedPanel.Tag is Node selectedNode)
             {
-                foreach (var grandchild in child.Children)
+                // Compare the selected option with the correct answer
+                // Display a message indicating if the answer is correct
+
+                if (currrentLevel == 1)
                 {
-                    if (grandchild is DeweyTreeNode deweyTreeNode && deweyTreeNode.Level == 2)
+                    bool isCorrect = ValidateUserAnswer(selectedNode);
+                    if (isCorrect)
                     {
-                        thirdLevelNodes.Add(deweyTreeNode);
+                        currrentLevel++;
+                        MessageBox.Show("Well done! Moving to round 2...");
+                        UpdateOptionsForLevel2();
+                        return;
                     }
+                    else
+                    {
+                        MessageBox.Show("Wrong answer! Try again...");
+                        // NEED TO ADD INCORRECT ANSWER GAMIFICATION
+                    }
+                }
+                
+                if (currrentLevel == 2)
+                {
+                    bool isCorrect = ValidateUserAnswer2ndLevel(selectedNode);
+                    if (isCorrect)
+                    {
+                        currrentLevel++;
+                        MessageBox.Show("Well done! Moving to round 3...");
+                        UpdateOptionsForLevel3(selectedNode);
+                        return;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Incorrect second level...");
+                    }
+                   
+                }
+
+                if (currrentLevel == 3)
+                {
+                    bool isCorrect = ValidateUserAnswer3rdLevel(selectedNode);
+                    if (isCorrect)
+                    {
+                        currrentLevel = 0;
+                        MessageBox.Show("Congrates your a wizard");
+                        // Call reset game here
+                    }
+                    else
+                    {
+                        MessageBox.Show("Incorrect 3rd level...");
+                    }
+
+                }
+            }
+        }
+
+
+
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Checks user selected answer against the correct answer node in the tree
+        /// </summary>
+        /// <param name="selectedOption"></param>
+        /// <returns></returns>
+        private bool ValidateUserAnswer(Node selectedOption)
+        {
+            return selectedOption.DeweyData.ClassNumber == correctAnswerNode.DeweyData.ClassNumber;
+        }
+
+        private bool ValidateUserAnswer2ndLevel(Node selectedOption)
+        {
+            return selectedOption.DeweyData.ClassNumber == answerFound.DeweyData.ClassNumber;
+        }
+
+        private bool ValidateUserAnswer3rdLevel(Node selectedOption)
+        {
+            return selectedOption.DeweyData.ClassNumber == answerFound.DeweyData.ClassNumber;
+        }
+
+        // ----------------------------------------------------------------------------------------------------------- //
+        private void CollectThirdLevelNodes(Node current, List<Node> result)
+        {
+            if (current != null)
+            {
+                // Traverse right subtree
+                CollectThirdLevelNodes(current.right, result);
+
+                // Check if the current node is at the third level
+                if (current.DeweyData.Level == 3)
+                {
+                    result.Add(current);
+                }
+
+                // Traverse left subtree
+                CollectThirdLevelNodes(current.left, result);
+            }
+        }
+
+        // ----------------------------------------------------------------------------------------------------------- //
+        private List<Node> GetTopLevelOptions()
+        {
+            Node rootNode = deweyTree.GetRoot();
+            List<Node> topLevelOptions = new List<Node>();
+
+            // Use breadth-first traversal to find top-level options
+            Queue<Node> queue = new Queue<Node>();
+            queue.Enqueue(rootNode);
+
+            while (queue.Count > 0)
+            {
+                Node current = queue.Dequeue();
+
+                // Check if the current node is at the first level
+                if (current != null && current.DeweyData.Level == 1)
+                {
+                    topLevelOptions.Add(current);
+                }
+
+                // Enqueue the child nodes
+                if (current != null)
+                {
+                    queue.Enqueue(current.left);
+                    queue.Enqueue(current.right);
                 }
             }
 
-            // Randomly select a third-level node
+            return topLevelOptions;
+        }
+
+        // ----------------------------------------------------------------------------------------------------------- //
+        private void CollectAllNodes(Node current, List<Node> result)
+        {
+            if (current != null)
+            {
+                // Traverse right subtree
+                CollectAllNodes(current.right, result);
+
+                // Add the current node to the result
+                result.Add(current);
+
+                // Traverse left subtree
+                CollectAllNodes(current.left, result);
+            }
+        }
+
+        // ----------------------------------------------------------------------------------------------------------- //
+        private Node GetAnswerNode(DeweyModel deweyModel)
+        {
+            var tempClassNum = deweyModel.ClassNumber.Substring(0, 1) + "00";
+            var answer = deweyTree.Find(tempClassNum);
+
+            return answer;
+        }
+
+        // ----------------------------------------------------------------------------------------------------------- //
+        private Node GetRandomThirdLevelEntry(out string correspondingFirstLevel)
+        {
+            var rootNode = deweyTree.GetRoot();
+            List<Node> thirdLevelNodes = new List<Node>();
+            CollectThirdLevelNodes(rootNode, thirdLevelNodes);
+
+            Random random = new Random();
             int randomIndex = random.Next(thirdLevelNodes.Count);
-            return thirdLevelNodes[randomIndex];
-        }
-        private List<string> GetQuizOptions(TreeNode<string> node)
-        {
-            // Get the parent node (second level) and its siblings
-            var secondLevelNodes = new List<DeweyTreeNode>();
-            if (node.Parent != null && node.Parent.Parent != null)
-            {
-                foreach (var sibling in node.Parent.Parent.Children)
-                {
-                    if (sibling is DeweyTreeNode deweyTreeNode)
-                    {
-                        secondLevelNodes.Add(deweyTreeNode);
-                    }
-                }
-            }
+            var randomThirdLevelNode = thirdLevelNodes[randomIndex];
+            correspondingFirstLevel = randomThirdLevelNode.DeweyData.ClassNumber.Substring(0, 1) + "00"; // Extract the corresponding first level
 
-            // Shuffle the second level nodes
-            Shuffle(secondLevelNodes);
-
-            // Prepare options
-            var options = new List<string>();
-            foreach (var optionNode in secondLevelNodes)
-            {
-                var firstChild = optionNode.Children.FirstOrDefault();
-                options.Add($"{optionNode.Data} - {firstChild?.Data}"); // Assuming the description is the first child
-            }
-
-            return options;
+            return randomThirdLevelNode;
         }
 
-        private void Shuffle<T>(IList<T> list)
+        // ----------------------------------------------------------------------------------------------------------- //
+        // Implement a method to shuffle a list
+        private void Shuffle<T>(List<T> list)
         {
+            Random rng = new Random();
             int n = list.Count;
             while (n > 1)
             {
                 n--;
-                int k = random.Next(n + 1);
+                int k = rng.Next(n + 1);
                 T value = list[k];
                 list[k] = list[n];
                 list[n] = value;
             }
         }
-    }
-    public class CsvDeweyModel
-    {
-        public int Class { get; set; }
-        public string Caption { get; set; }
-        public int Summary { get; set; }
+        // ------------------------------------------------------------------ //
+        /// <summary>
+        ///     Method to play a sound, url path is passed so that the method is dynamic
+        /// </summary>
+        /// <param name="url"></param>
+        public async Task PlaySound(string url)
+        {
+            await Task.Run(() =>
+            {
+                soundPlayer.PlaySound($"Media\\{url}");
+            });
+        }
+        private void UpdateOptionsForLevel2()
+        {
+            // Get all second-level options
+            var secondLevelOptions = GetSecondLevelOptions();
+
+            // Select the correct second level
+            string correctSecondLevel = correctAnswerNode.DeweyData.ClassNumber.Substring(0, 2) + "0";
+
+            // Filter second-level options to get only the nodes with round numbers
+            // I changed EndWith over here
+            List<Node> correctSecondLevelOptions = secondLevelOptions
+                .Where(node => node.DeweyData.ClassNumber.EndsWith("0"))
+                .ToList();
+
+            // Ensure that the correct answer is included
+            if (!correctSecondLevelOptions.Any(node =>
+                node.DeweyData.ClassNumber == correctAnswerNode.DeweyData.ClassNumber.Substring(0, 2) + "0"))
+            {
+                correctSecondLevelOptions.Add(correctAnswerNode);
+            }
+
+            // Shuffle all options (correct and incorrect)
+            List<Node> allOptions = new List<Node>(correctSecondLevelOptions);
+            allOptions.AddRange(secondLevelOptions.Except(correctSecondLevelOptions));
+            Shuffle(allOptions);
+
+            // Take three options from the shuffled list
+            options = allOptions.Take(3).ToList();
+            var substring = firstQuestion.Substring(0, 2) + "0";
+            answerFound = deweyTree.Find(substring);
+            // Remember to make this order random
+            options.Add(answerFound);
+
+            Shuffle(options);
+
+
+            for (int i = 0; i < optionLabels.Count; i++)
+            {
+                optionLabels[i].Text = $"{options[i].DeweyData.ClassNumber} - {options[i].DeweyData.Description}";
+            }
+
+            for (int i = 0; i < optionPanels.Length; i++)
+            {
+                optionPanels[i].Tag = options[i];
+                // Update the label text with the new descriptions
+                (optionPanels[i].Controls[0] as Label).Text = $"{options[i].DeweyData.ClassNumber} - {options[i].DeweyData.Description}";
+            }
+        }
+
+        // ----------------------------------------------------------------------------------------------------------- //
+        private List<Node> GetSecondLevelOptions()
+        {
+            Node rootNode = deweyTree.GetRoot();
+            List<Node> secondLevelOptions = new List<Node>();
+
+            // Use breadth-first traversal to find second-level options
+            Queue<Node> queue = new Queue<Node>();
+            queue.Enqueue(rootNode);
+
+            while (queue.Count > 0)
+            {
+                Node current = queue.Dequeue();
+                // Check if the current node is at the second level
+                if (current != null && current.DeweyData.Level == 2)
+                {
+                    secondLevelOptions.Add(current);
+                }
+
+                // Enqueue the child nodes
+                if (current != null)
+                {
+                    queue.Enqueue(current.left);
+                    queue.Enqueue(current.right);
+                }
+            }
+
+            return secondLevelOptions;
+        }
+
+        private void UpdateOptionsForLevel3(Node selectedNode)
+        {
+            // Get all third-level options
+            var thirdLevelOptions = GetThirdLevelOptions();
+
+            // Select the correct third level
+            string correctThirdLevel = selectedNode.DeweyData.ClassNumber.Substring(0, 3);
+
+            // Filter third-level options to get only the nodes with the correct third level
+            List<Node> correctThirdLevelOptions = thirdLevelOptions
+                .Where(node => node.DeweyData.ClassNumber.StartsWith(correctThirdLevel))
+                .ToList();
+
+            // Ensure that the correct answer is included
+            if (!correctThirdLevelOptions.Any(node => node.DeweyData.ClassNumber == selectedNode.DeweyData.ClassNumber))
+            {
+                correctThirdLevelOptions.Add(selectedNode);
+            }
+
+            // Shuffle all options (correct and incorrect)
+            List<Node> allOptions = new List<Node>(correctThirdLevelOptions);
+            allOptions.AddRange(thirdLevelOptions.Except(correctThirdLevelOptions));
+            Shuffle(allOptions);
+
+            // Take three options from the shuffled list
+            options = allOptions.Take(3).ToList();
+            answerFound = deweyTree.Find(firstQuestion);
+            options.Add(answerFound);
+            Shuffle(options);
+
+            for (int i = 0; i < optionLabels.Count; i++)
+            {
+                optionLabels[i].Text = $"{options[i].DeweyData.ClassNumber} - {options[i].DeweyData.Description}";
+            }
+
+            for (int i = 0; i < optionPanels.Length; i++)
+            {
+                optionPanels[i].Tag = options[i];
+                // Update the label text with the new descriptions
+                (optionPanels[i].Controls[0] as Label).Text = $"{options[i].DeweyData.ClassNumber} - {options[i].DeweyData.Description}";
+            }
+        }
+
+        private List<Node> GetThirdLevelOptions()
+        {
+            Node rootNode = deweyTree.GetRoot();
+            List<Node> thirdLevelOptions = new List<Node>();
+
+            // Use breadth-first traversal to find third-level options
+            Queue<Node> queue = new Queue<Node>();
+            queue.Enqueue(rootNode);
+
+            while (queue.Count > 0)
+            {
+                Node current = queue.Dequeue();
+                // Check if the current node is at the third level
+                if (current != null && current.DeweyData.Level == 3)
+                {
+                    thirdLevelOptions.Add(current);
+                }
+
+                // Enqueue the child nodes
+                if (current != null)
+                {
+                    queue.Enqueue(current.left);
+                    queue.Enqueue(current.right);
+                }
+            }
+
+            return thirdLevelOptions;
+        }
     }
 }
+// --------------------------------- .....ooooo00000 END OF FILE 00000ooooo..... --------------------------------- //
