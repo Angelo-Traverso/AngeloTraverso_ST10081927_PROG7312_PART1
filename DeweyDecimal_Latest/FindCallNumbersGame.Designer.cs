@@ -37,7 +37,7 @@
             this.findingCallNumberTreeControl2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.findingCallNumberTreeControl2.Location = new System.Drawing.Point(0, 0);
             this.findingCallNumberTreeControl2.Name = "findingCallNumberTreeControl2";
-            this.findingCallNumberTreeControl2.Size = new System.Drawing.Size(811, 570);
+            this.findingCallNumberTreeControl2.Size = new System.Drawing.Size(811, 637);
             this.findingCallNumberTreeControl2.TabIndex = 0;
             // 
             // findingCallNumberTreeControl1
@@ -52,11 +52,14 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(811, 570);
+            this.ClientSize = new System.Drawing.Size(811, 637);
             this.Controls.Add(this.findingCallNumberTreeControl2);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.HelpButton = true;
             this.Name = "FindCallNumbersGame";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FindCallNumbersGame";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FindCallNumbersGame_FormClosing);
             this.ResumeLayout(false);
 
         }

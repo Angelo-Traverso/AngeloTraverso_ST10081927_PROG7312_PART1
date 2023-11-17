@@ -54,6 +54,7 @@
             this.Name = "IdentifyingAreascs";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Match the Columns";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.IdentifyingAreascs_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.IdentifyingAreascs_FormClosed);
             this.ResumeLayout(false);
 

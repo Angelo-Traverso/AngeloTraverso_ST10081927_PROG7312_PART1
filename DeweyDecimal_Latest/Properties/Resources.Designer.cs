@@ -61,6 +61,16 @@ namespace DeweyDecimal_Latest.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Adventure {
+            get {
+                object obj = ResourceManager.GetObject("Adventure", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Back {
@@ -76,6 +86,16 @@ namespace DeweyDecimal_Latest.Properties {
         internal static System.Drawing.Bitmap BackArrow {
             get {
                 object obj = ResourceManager.GetObject("BackArrow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap blue_elipse {
+            get {
+                object obj = ResourceManager.GetObject("blue_elipse", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -113,9 +133,39 @@ namespace DeweyDecimal_Latest.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap exit_button {
+            get {
+                object obj = ResourceManager.GetObject("exit_button", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap exit_ellipse {
+            get {
+                object obj = ResourceManager.GetObject("exit_ellipse", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap help {
             get {
                 object obj = ResourceManager.GetObject("help", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap home_button {
+            get {
+                object obj = ResourceManager.GetObject("home_button", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -133,6 +183,16 @@ namespace DeweyDecimal_Latest.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap orange_ellipse {
+            get {
+                object obj = ResourceManager.GetObject("orange_ellipse", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap pause_button {
             get {
                 object obj = ResourceManager.GetObject("pause-button", resourceCulture);
@@ -143,9 +203,29 @@ namespace DeweyDecimal_Latest.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap pink_ellipse {
+            get {
+                object obj = ResourceManager.GetObject("pink_ellipse", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap play {
             get {
                 object obj = ResourceManager.GetObject("play", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap purple_ellipse {
+            get {
+                object obj = ResourceManager.GetObject("purple_ellipse", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -176,6 +256,16 @@ namespace DeweyDecimal_Latest.Properties {
         internal static System.Drawing.Bitmap QuestionMark {
             get {
                 object obj = ResourceManager.GetObject("QuestionMark", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ReadyButton {
+            get {
+                object obj = ResourceManager.GetObject("ReadyButton", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

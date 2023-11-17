@@ -5,6 +5,7 @@
  *  Code: PROG7312
  */
 
+using System;
 using System.Windows.Forms;
 
 namespace DeweyDecimal_Latest
@@ -33,6 +34,11 @@ namespace DeweyDecimal_Latest
 
         private void IdentifyingAreascs_FormClosed(object sender, FormClosedEventArgs e)
         {
+        }
+
+        private void IdentifyingAreascs_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Environment.Exit(1);
         }
     }
 }
