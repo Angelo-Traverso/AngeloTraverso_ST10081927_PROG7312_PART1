@@ -808,5 +808,20 @@ namespace DeweyDecimal_Latest
         {
             panelHelper.CreateToolTip(btnNewGame, "New Game");
         }
+
+        /// <summary>
+        ///     Allows user to exit Application completely
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnExitApplication_Click(object sender, EventArgs e)
+        {
+            var message = MessageBox.Show("Your about to exit the game and will lose all progress!\n\nAre you sure you would like to exit?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+            if (message == DialogResult.Yes)
+            {
+                Application.Exit();
+            }
+        }
     }
 }// --------------------------------- .....ooooo00000 END OF FILE 00000ooooo..... --------------------------------- //

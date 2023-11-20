@@ -17,6 +17,8 @@ namespace DeweyDecimal_Latest
             InitializeComponent();
 
             HandleWindowState();
+
+            this.ControlBox = false;
         }
 
         /// <summary>

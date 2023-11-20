@@ -52,6 +52,7 @@
             this.pnlFColumn2 = new System.Windows.Forms.Panel();
             this.pnlFColumn1 = new System.Windows.Forms.Panel();
             this.matchColumnTimer = new System.Windows.Forms.Timer(this.components);
+            this.btnExitApplication = new System.Windows.Forms.Button();
             this.pnlDraw.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -59,6 +60,7 @@
             // pnlDraw
             // 
             this.pnlDraw.BackColor = System.Drawing.Color.Transparent;
+            this.pnlDraw.Controls.Add(this.btnExitApplication);
             this.pnlDraw.Controls.Add(this.btnExit);
             this.pnlDraw.Controls.Add(this.btnStart);
             this.pnlDraw.Controls.Add(this.panel1);
@@ -288,6 +290,16 @@
             // 
             this.matchColumnTimer.Tick += new System.EventHandler(this.matchColumnTimer_Tick);
             // 
+            // btnExitApplication
+            // 
+            this.btnExitApplication.Location = new System.Drawing.Point(691, 19);
+            this.btnExitApplication.Name = "btnExitApplication";
+            this.btnExitApplication.Size = new System.Drawing.Size(75, 23);
+            this.btnExitApplication.TabIndex = 18;
+            this.btnExitApplication.Text = "Exit";
+            this.btnExitApplication.UseVisualStyleBackColor = true;
+            this.btnExitApplication.Click += new System.EventHandler(this.btnExitApplication_Click);
+            // 
             // MatchColumn_Control
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -328,5 +340,6 @@
         private System.Windows.Forms.Button btnExit;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btnExitApplication;
     }
 }

@@ -35,6 +35,7 @@ namespace DeweyDecimal_Latest
         {
             InitializeComponent();
             HandleWindowState();
+            this.ControlBox = false;
         }
 
         /// <summary>
@@ -76,7 +77,6 @@ namespace DeweyDecimal_Latest
         /// <param name="e"></param>
         private void btnIdentifyAreas_Click(object sender, EventArgs e)
         {
-            StartPlaying start = new StartPlaying();
             IdentifyingAreascs areas = new IdentifyingAreascs();
             areas.Show();
             this.Hide();

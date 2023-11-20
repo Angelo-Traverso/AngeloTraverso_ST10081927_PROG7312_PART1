@@ -49,12 +49,14 @@
             // 
             // btnFindCallNumbers
             // 
-            this.btnFindCallNumbers.Location = new System.Drawing.Point(194, 285);
+            this.btnFindCallNumbers.BackColor = System.Drawing.Color.MediumAquamarine;
+            this.btnFindCallNumbers.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnFindCallNumbers.Location = new System.Drawing.Point(194, 289);
             this.btnFindCallNumbers.Name = "btnFindCallNumbers";
-            this.btnFindCallNumbers.Size = new System.Drawing.Size(164, 29);
+            this.btnFindCallNumbers.Size = new System.Drawing.Size(164, 44);
             this.btnFindCallNumbers.TabIndex = 6;
             this.btnFindCallNumbers.Text = "Find Call Numbers";
-            this.btnFindCallNumbers.UseVisualStyleBackColor = true;
+            this.btnFindCallNumbers.UseVisualStyleBackColor = false;
             this.btnFindCallNumbers.Click += new System.EventHandler(this.btnFindCallNumbers_Click);
             // 
             // btnIdentifyAreas
@@ -86,12 +88,13 @@
             // 
             // btnExit
             // 
-            this.btnExit.Location = new System.Drawing.Point(194, 329);
+            this.btnExit.BackColor = System.Drawing.Color.Red;
+            this.btnExit.Location = new System.Drawing.Point(194, 351);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(164, 30);
             this.btnExit.TabIndex = 8;
             this.btnExit.Text = "Exit";
-            this.btnExit.UseVisualStyleBackColor = true;
+            this.btnExit.UseVisualStyleBackColor = false;
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
             // StartMenu

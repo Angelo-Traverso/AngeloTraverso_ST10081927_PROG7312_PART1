@@ -28,6 +28,7 @@ namespace DeweyDecimal_Latest
         /// </summary>
         private void HandleWindowState()
         {
+            this.ControlBox = false;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
         }

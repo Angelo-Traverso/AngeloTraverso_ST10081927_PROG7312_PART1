@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace DeweyDecimal_Latest.Forms
 {
@@ -16,8 +8,13 @@ namespace DeweyDecimal_Latest.Forms
         {
             InitializeComponent();
             HandleWindowState();
+            this.ControlBox = false;
         }
 
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Removes sizing options
+        /// </summary>
         private void HandleWindowState()
         {
             this.MaximizeBox = false;
@@ -25,3 +22,4 @@ namespace DeweyDecimal_Latest.Forms
         }
     }
 }
+// --------------------------------- .....ooooo00000 END OF FILE 00000ooooo..... --------------------------------- //
