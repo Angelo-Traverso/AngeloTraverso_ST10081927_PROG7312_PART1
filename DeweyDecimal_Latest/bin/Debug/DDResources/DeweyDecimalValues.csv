@@ -13,7 +13,6 @@ Class;Caption;Summary
 010;Bibliographies;2
 020;Library & information sciences;2
 030;Encyclopedias & books of facts;2
-040;[Unassigned];2
 050;Magazines, journals & serials;2
 060;Associations, organizations & museums;2
 070;News media, journalism & publishing;2
@@ -244,7 +243,6 @@ Class;Caption;Summary
 155;Differential & developmental psychology;3
 156;Comparative psychology;3
 158;Applied psychology;3
-159;[Unassigned];3
 160;Logic;3
 161;Induction;3
 162;Deduction;3
@@ -370,7 +368,6 @@ Class;Caption;Summary
 295;Zoroastrianism;3
 296;Judaism;3
 297;Islam, Babism & Bahai Faith;3
-298;(Optional number);3
 299;Religions not provided for elsewhere;3
 300;Social sciences;3
 301;Sociology & anthropology;3
@@ -816,7 +813,6 @@ Class;Caption;Summary
 786;Keyboard & other instruments;3
 787;Stringed instruments;3
 788;Wind instruments;3
-789;(Optional number);3
 790;Recreational & performing arts;3
 791;Public performances;3
 792;Stage presentations;3
@@ -845,7 +841,6 @@ Class;Caption;Summary
 816;American letters in English;3
 817;American humor & satire in English;3
 818;American miscellaneous writings;3
-819;(Optional number);3
 820;English & Old English literatures;3
 821;English poetry;3
 822;English drama;3
@@ -947,14 +942,6 @@ Class;Caption;Summary
 918;Geography of & travel in South America;3
 919;Geography of & travel in other areas;3
 920;Biography, genealogy & insignia;3
-921;(Optional number);3
-922;(Optional number);3
-923;(Optional number);3
-924;(Optional number);3
-925;(Optional number);3
-926;(Optional number);3
-927;(Optional number);3
-928;(Optional number);3
 929;Genealogy, names & insignia;3
 930;History of ancient world to ca. 499;3
 931;China to 420;3
@@ -1017,8 +1004,6 @@ Class;Caption;Summary
 988;Guiana;3
 989;Paraguay & Uruguay;3
 990;History of other areas;3
-991;[Unassigned];3
-992;[Unassigned];3
 993;New Zealand;3
 994;Australia;3
 995;"Melanesia; New Guinea";3

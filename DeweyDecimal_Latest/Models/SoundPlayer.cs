@@ -17,7 +17,7 @@ namespace DeweyDecimal_Latest
             try
             {
               mediaPlayer.URL = filePath;
-               mediaPlayer.controls.play();
+              mediaPlayer.controls.play();
             }
             catch (Exception ex)
             {
@@ -35,6 +35,12 @@ namespace DeweyDecimal_Latest
             {
                 Console.WriteLine("Error stopping sound: " + ex.Message);
             }
+        }
+
+        public void Dispose()
+        {
+            mediaPlayer.close();
+            System.Runtime.InteropServices.Marshal.ReleaseComObject(mediaPlayer);
         }
     }
 }

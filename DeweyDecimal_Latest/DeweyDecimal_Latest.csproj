@@ -86,105 +86,119 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileWorker.cs" />
-    <Compile Include="FindCallNumbersGame.cs">
+    <Compile Include="Classes\FileWorker.cs" />
+    <Compile Include="Forms\FindCallNumbersGame.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FindCallNumbersGame.Designer.cs">
+    <Compile Include="Forms\FindCallNumbersGame.Designer.cs">
       <DependentUpon>FindCallNumbersGame.cs</DependentUpon>
     </Compile>
-    <Compile Include="FindingCallNumbersQuiz.cs">
+    <Compile Include="Forms\FindingCallNumberGame.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FindingCallNumbersQuiz.Designer.cs">
-      <DependentUpon>FindingCallNumbersQuiz.cs</DependentUpon>
+    <Compile Include="Forms\FindingCallNumberGame.Designer.cs">
+      <DependentUpon>FindingCallNumberGame.cs</DependentUpon>
     </Compile>
-    <Compile Include="FindingCallNumberTreeControl.cs">
+    <Compile Include="Forms\GameOverSplash.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\GameOverSplash.Designer.cs">
+      <DependentUpon>GameOverSplash.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\WinForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\WinForm.Designer.cs">
+      <DependentUpon>WinForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\FindingCallNumberTreeControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="FindingCallNumberTreeControl.Designer.cs">
+    <Compile Include="UserControls\FindingCallNumberTreeControl.Designer.cs">
       <DependentUpon>FindingCallNumberTreeControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="IdentifyingAreascs.cs">
+    <Compile Include="Forms\IdentifyingAreascs.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="IdentifyingAreascs.Designer.cs">
+    <Compile Include="Forms\IdentifyingAreascs.Designer.cs">
       <DependentUpon>IdentifyingAreascs.cs</DependentUpon>
     </Compile>
-    <Compile Include="MatchColumn_Control.cs">
+    <Compile Include="UserControls\MatchColumn_Control.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="MatchColumn_Control.Designer.cs">
+    <Compile Include="UserControls\MatchColumn_Control.Designer.cs">
       <DependentUpon>MatchColumn_Control.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\AreaBook.cs" />
     <Compile Include="Models\Book.cs" />
-    <Compile Include="BookPlacementHandler.cs" />
-    <Compile Include="Form1.cs">
+    <Compile Include="Classes\BookPlacementHandler.cs" />
+    <Compile Include="Forms\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
+    <Compile Include="Forms\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\DeweyModel.cs" />
     <Compile Include="Models\Line.cs" />
     <Compile Include="Models\QuestionAnswerPair.cs" />
-    <Compile Include="PanelHelper.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Classes\PanelHelper.cs" />
+    <Compile Include="Classes\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RedBlackTree.cs" />
-    <Compile Include="SortingGame.cs">
+    <Compile Include="Classes\RedBlackTree.cs" />
+    <Compile Include="UserControls\SortingGame.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="SortingGame.Designer.cs">
+    <Compile Include="UserControls\SortingGame.Designer.cs">
       <DependentUpon>SortingGame.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\SoundPlayer.cs" />
-    <Compile Include="StartMenu.cs">
+    <Compile Include="Forms\StartMenu.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="StartMenu.Designer.cs">
+    <Compile Include="Forms\StartMenu.Designer.cs">
       <DependentUpon>StartMenu.cs</DependentUpon>
     </Compile>
-    <Compile Include="StartMenuControl.cs">
+    <Compile Include="UserControls\StartMenuControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="StartMenuControl.Designer.cs">
+    <Compile Include="UserControls\StartMenuControl.Designer.cs">
       <DependentUpon>StartMenuControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Statistics.cs" />
-    <Compile Include="StartPlaying.cs">
+    <Compile Include="Forms\StartPlaying.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="StartPlaying.Designer.cs">
+    <Compile Include="Forms\StartPlaying.Designer.cs">
       <DependentUpon>StartPlaying.cs</DependentUpon>
     </Compile>
-    <Compile Include="StatisticsControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="StatisticsControl.Designer.cs">
-      <DependentUpon>StatisticsControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="StatisticsForm.cs">
+    <Compile Include="Forms\StatisticsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="StatisticsForm.Designer.cs">
+    <Compile Include="Forms\StatisticsForm.Designer.cs">
       <DependentUpon>StatisticsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="TreeNode.cs" />
-    <EmbeddedResource Include="FindCallNumbersGame.resx">
+    <EmbeddedResource Include="Forms\FindCallNumbersGame.resx">
       <DependentUpon>FindCallNumbersGame.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FindingCallNumberTreeControl.resx">
+    <EmbeddedResource Include="Forms\FindingCallNumberGame.resx">
+      <DependentUpon>FindingCallNumberGame.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\GameOverSplash.resx">
+      <DependentUpon>GameOverSplash.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\WinForm.resx">
+      <DependentUpon>WinForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\FindingCallNumberTreeControl.resx">
       <DependentUpon>FindingCallNumberTreeControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form1.resx">
+    <EmbeddedResource Include="Forms\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="IdentifyingAreascs.resx">
+    <EmbeddedResource Include="Forms\IdentifyingAreascs.resx">
       <DependentUpon>IdentifyingAreascs.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MatchColumn_Control.resx">
+    <EmbeddedResource Include="UserControls\MatchColumn_Control.resx">
       <DependentUpon>MatchColumn_Control.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -197,22 +211,19 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="SortingGame.resx">
+    <EmbeddedResource Include="UserControls\SortingGame.resx">
       <DependentUpon>SortingGame.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StartMenu.resx">
+    <EmbeddedResource Include="Forms\StartMenu.resx">
       <DependentUpon>StartMenu.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StartMenuControl.resx">
+    <EmbeddedResource Include="UserControls\StartMenuControl.resx">
       <DependentUpon>StartMenuControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StartPlaying.resx">
+    <EmbeddedResource Include="Forms\StartPlaying.resx">
       <DependentUpon>StartPlaying.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StatisticsControl.resx">
-      <DependentUpon>StatisticsControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="StatisticsForm.resx">
+    <EmbeddedResource Include="Forms\StatisticsForm.resx">
       <DependentUpon>StatisticsForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="bin\Debug\DeweyDecimal_Latest.exe.config" />
@@ -245,13 +256,24 @@
     <Content Include="bin\Debug\Images\pause-button.png" />
     <Content Include="bin\Debug\Images\WhiteBack.png" />
     <Content Include="bin\Debug\Media\Adventure.mp3" />
+    <Content Include="bin\Debug\Media\AdventureWav.wav" />
     <Content Include="bin\Debug\Media\lose.mp3" />
     <Content Include="bin\Debug\Media\Piano.mp3" />
     <Content Include="bin\Debug\Media\pickup.mp3" />
     <Content Include="bin\Debug\Media\Success.mp3" />
     <Content Include="bin\Debug\Media\violinLose.mp3" />
     <Content Include="bin\Debug\Media\Wink.mp3" />
+    <None Include="Resources\gameWin.png" />
+    <None Include="Resources\WinSplash.png" />
+    <None Include="Resources\GameOverSplash.png" />
+    <None Include="Resources\scrollWithTextFinal.png" />
+    <None Include="Resources\ScrollWithText.png" />
+    <None Include="Resources\Scroll.png" />
+    <None Include="Resources\file_path.bmp" />
+    <None Include="Resources\FindingCallNumsBackground.jpg" />
     <None Include="Resources\Adventure.mp3" />
+    <None Include="Resources\BackgroundImage_FinalGame.jpg" />
+    <Content Include="bin\Debug\Media\wrongChoice.mp3" />
     <Content Include="Resources\blue_elipse.png" />
     <None Include="Resources\ReadyButton.png" />
     <None Include="Resources\pink_ellipse.png" />
@@ -281,6 +303,35 @@
       <Project>{755f3e12-bec6-4ead-af0f-7db096b90759}</Project>
       <Name>TimerLib</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="MediaPlayer">
+      <Guid>{22D6F304-B0F6-11D0-94AB-0080C74C7E95}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="stdole">
+      <Guid>{00020430-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="WMPLib">
+      <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

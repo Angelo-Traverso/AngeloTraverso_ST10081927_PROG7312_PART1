@@ -93,6 +93,16 @@ namespace DeweyDecimal_Latest.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap BackgroundImage_FinalGame {
+            get {
+                object obj = ResourceManager.GetObject("BackgroundImage_FinalGame", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap blue_elipse {
             get {
                 object obj = ResourceManager.GetObject("blue_elipse", resourceCulture);
@@ -117,6 +127,15 @@ namespace DeweyDecimal_Latest.Properties {
             get {
                 object obj = ResourceManager.GetObject("bookSpine", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DDResources\\DeweyDecimalValues.csv.
+        /// </summary>
+        internal static string dewey_file_path {
+            get {
+                return ResourceManager.GetString("dewey_file_path", resourceCulture);
             }
         }
         
@@ -146,6 +165,46 @@ namespace DeweyDecimal_Latest.Properties {
         internal static System.Drawing.Bitmap exit_ellipse {
             get {
                 object obj = ResourceManager.GetObject("exit_ellipse", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap file_path {
+            get {
+                object obj = ResourceManager.GetObject("file_path", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap FindingCallNumsBackground {
+            get {
+                object obj = ResourceManager.GetObject("FindingCallNumsBackground", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap GameOverSplash {
+            get {
+                object obj = ResourceManager.GetObject("GameOverSplash", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap gameWin {
+            get {
+                object obj = ResourceManager.GetObject("gameWin", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -286,6 +345,36 @@ namespace DeweyDecimal_Latest.Properties {
         internal static System.Drawing.Bitmap return_arrow {
             get {
                 object obj = ResourceManager.GetObject("return-arrow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Scroll {
+            get {
+                object obj = ResourceManager.GetObject("Scroll", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ScrollWithText {
+            get {
+                object obj = ResourceManager.GetObject("ScrollWithText", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap scrollWithTextFinal {
+            get {
+                object obj = ResourceManager.GetObject("scrollWithTextFinal", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
