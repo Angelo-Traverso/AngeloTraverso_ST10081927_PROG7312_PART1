@@ -5,11 +5,16 @@
  * Project Title: Farm Central Prototype Website
  */
 
+#region Usings
+
 using System;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TimerLib;
+
+#endregion
+
 
 namespace DeweyDecimal_Latest
 {
@@ -251,11 +256,12 @@ namespace DeweyDecimal_Latest
         /// <param name="e"></param>
         private void timer_tree_Tick(object sender, EventArgs e)
         {
-            // First checking if the form is disposed - stop the timer if its true
-            if (IsDisposed)
+            // First checking if the label control is disposed or if the form is disposed
+            if (lblTimer.IsDisposed || IsDisposed)
             {
-                // Stop the timer if the form is disposed
+                // Stop the timer if the label control or form is disposed
                 timer_tree.Stop();
+                timer_tree.Dispose();
                 return;
             }
 
@@ -272,9 +278,9 @@ namespace DeweyDecimal_Latest
             // Checking to see if invoking is required for updating the timer label
             if (lblTimer.InvokeRequired)
             {
-                if (!IsDisposed && lblTimer != null && lblTimer.IsHandleCreated)
+                if (!lblTimer.IsDisposed && lblTimer.IsHandleCreated)
                 {
-                    // Invoking the update of timer label in the UI thread
+                    // Invoking the update of the timer label in the UI thread
                     lblTimer.Invoke(new Action(() => lblTimer.Text = TimeSpan.FromSeconds(elapsedTimeInSeconds).ToString()));
                 }
             }

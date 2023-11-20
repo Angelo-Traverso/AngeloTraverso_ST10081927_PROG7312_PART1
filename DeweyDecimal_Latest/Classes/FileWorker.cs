@@ -13,7 +13,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TressSampleApplication.Classes;
@@ -206,6 +205,7 @@ namespace DeweyDecimal_Latest
                             Description = parts[1].Trim(),
                             Level = int.Parse(parts[2].Trim())
                         };
+
                         // Inserting node of type deweyModel
                         deweyTree.Insert(deweyModel);
                     }
@@ -228,7 +228,7 @@ namespace DeweyDecimal_Latest
 
             lblQuestion.Text = string.Empty;
 
-            // Alter panel values
+            // Removing events from panels on reset
             foreach (var panel in optionPanels)
             {
                 panel.Click -= Panel_Click;
@@ -310,11 +310,8 @@ namespace DeweyDecimal_Latest
             options = new List<Node>(correctFirstLevelOptions);
             options.AddRange(incorrectOptions);
 
-            /* // Randomising the combined options
-             Shuffle(options);*/
             // Sorting the combined options by ClassNumber
             options.Sort((x, y) => x.DeweyData.ClassNumber.CompareTo(y.DeweyData.ClassNumber));
-
 
             // Initialize the list to store labels
             optionLabels = new List<Label>();
@@ -361,6 +358,7 @@ namespace DeweyDecimal_Latest
         }
 
         #region Panel Events
+
         // ----------------------------------------------------------------------------------------------------------- //
         /// <summary>
         ///     Method to alter the mouse curser if the user enters the panel
@@ -422,8 +420,10 @@ namespace DeweyDecimal_Latest
         /// <param name="selectedNode"></param>
         private void ProcessLevel1Click(Node selectedNode)
         {
+            // Whether the user selected answer is correct or not
             bool isCorrect = ValidateUserAnswer(selectedNode);
 
+            // If the answer is correct, then play the sound, and display new options for level 2
             if (isCorrect)
             {
                 _ = PlaySound("Wink.mp3");
@@ -435,7 +435,8 @@ namespace DeweyDecimal_Latest
             }
 
             HandleLives();
-
+            
+            // if user has no more lives left, play a sound, and show game over splash screen.
             if (livesLeft == 0)
             {
                 _ = PlaySound("violinLose.mp3");
@@ -457,9 +458,6 @@ namespace DeweyDecimal_Latest
                     }
                 }
             }
-            _ = PlaySound("wrongChoice.mp3");
-            control.SetLabelError();
-            control.UpdateLabelText("Wrong answer! Try again...");
         }
 
         // ----------------------------------------------------------------------------------------------------------- //
@@ -469,8 +467,10 @@ namespace DeweyDecimal_Latest
         /// <param name="selectedNode"></param>
         private void ProcessLevel2Click(Node selectedNode)
         {
+            // Whether the user selected answer is correct or not
             bool isCorrect = ValidateUserAnswer2ndLevel(selectedNode);
 
+            // If the answer is correct, then play the sound, and display new options for level 3
             if (isCorrect)
             {
                 _ = PlaySound("Wink.mp3");
@@ -483,15 +483,16 @@ namespace DeweyDecimal_Latest
 
             HandleLives();
 
+            // if user has no more lives left, play a sound, and show game over splash screen.
             if (livesLeft == 0)
             {
                 _ = PlaySound("violinLose.mp3");
-               
                 
                 using (var gameOverForm = new GameOverSplash())
                 {
                     gameOverForm.ShowDialog();
 
+                    // Show game of dialog
                     if (gameOverForm.PlayAgain)
                     {
                         gamesPlayed += 1;
@@ -506,10 +507,6 @@ namespace DeweyDecimal_Latest
                     }
                 }
             }
-
-            _ = PlaySound("wrongChoice.mp3");
-            control.SetLabelError();
-            control.UpdateLabelText("Whoops, wrong answer...");
         }
 
         // ----------------------------------------------------------------------------------------------------------- //
@@ -519,6 +516,7 @@ namespace DeweyDecimal_Latest
         /// <param name="selectedNode"></param>
         private void ProcessLevel3Click(Node selectedNode)
         {
+            // Whether the user selected answer is correct or not
             bool isCorrect = ValidateUserAnswer3rdLevel(selectedNode);
 
             if (isCorrect)
@@ -544,9 +542,9 @@ namespace DeweyDecimal_Latest
                 }
             }
             
-
             HandleLives();
 
+            // Game is over, play sound and show game over dialog
             if (livesLeft == 0)
             {
                 _ = PlaySound("violinLose.mp3");
@@ -560,9 +558,11 @@ namespace DeweyDecimal_Latest
                         ResetGame();
                         return;
                     }
-                    else { return; }
+                    else 
+                    { 
+                        return; 
+                    }
                 }
-
             }
         }
 
@@ -574,6 +574,9 @@ namespace DeweyDecimal_Latest
         {
             if (livesLeft > 0)
             {
+                _ = PlaySound("wrongChoice.mp3");
+                control.SetLabelError();
+                control.UpdateLabelText("Wrong answer...");
                 livesLeft -= 1;
                 OnLifeLost();
             }
@@ -896,8 +899,6 @@ namespace DeweyDecimal_Latest
             List<Node> allOptions = new List<Node>(correctThirdLevelOptions);
             allOptions.AddRange(thirdLevelOptions.Except(correctThirdLevelOptions));
             //Shuffle(allOptions);
-
-            
 
             // Taking three options from the shuffled list
             options = allOptions.Take(3).ToList();
