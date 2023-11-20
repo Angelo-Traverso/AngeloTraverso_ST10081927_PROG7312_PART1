@@ -310,8 +310,11 @@ namespace DeweyDecimal_Latest
             options = new List<Node>(correctFirstLevelOptions);
             options.AddRange(incorrectOptions);
 
-            // Randomising the combined options
-            Shuffle(options);
+            /* // Randomising the combined options
+             Shuffle(options);*/
+            // Sorting the combined options by ClassNumber
+            options.Sort((x, y) => x.DeweyData.ClassNumber.CompareTo(y.DeweyData.ClassNumber));
+
 
             // Initialize the list to store labels
             optionLabels = new List<Label>();
@@ -446,6 +449,12 @@ namespace DeweyDecimal_Latest
                         ResetGame();
                         return;
                     }
+                    else
+                    {
+                        var mainForm = new FindingCallNumberTreeControl();
+                        mainForm.StopMusic();
+                        return;
+                    }
                 }
             }
             _ = PlaySound("wrongChoice.mp3");
@@ -477,6 +486,8 @@ namespace DeweyDecimal_Latest
             if (livesLeft == 0)
             {
                 _ = PlaySound("violinLose.mp3");
+               
+                
                 using (var gameOverForm = new GameOverSplash())
                 {
                     gameOverForm.ShowDialog();
@@ -485,6 +496,12 @@ namespace DeweyDecimal_Latest
                     {
                         gamesPlayed += 1;
                         ResetGame();
+                        return;
+                    }
+                    else
+                    {
+                        var mainForm = new FindingCallNumberTreeControl();
+                        mainForm.StopMusic();
                         return;
                     }
                 }
@@ -518,7 +535,12 @@ namespace DeweyDecimal_Latest
                         ResetGame();
                         return;
                     }
-                    else { return; }
+                    else 
+                    { 
+                        var mainForm = new FindingCallNumberTreeControl(); 
+                        mainForm.StopMusic();
+                        return; 
+                    }
                 }
             }
             
@@ -783,9 +805,8 @@ namespace DeweyDecimal_Latest
             // Remember to make this order random
             options.Add(answerFound);
 
-            // Randomizing the list
-            Shuffle(options);
-
+            // Sorting the list of options into ascending order by call number
+            options.Sort((x, y) => x.DeweyData.ClassNumber.CompareTo(y.DeweyData.ClassNumber));
 
             // Updating labels
             for (int i = 0; i < optionLabels.Count; i++)
@@ -874,14 +895,17 @@ namespace DeweyDecimal_Latest
             // Shuffling all the options for both correct and incorrect
             List<Node> allOptions = new List<Node>(correctThirdLevelOptions);
             allOptions.AddRange(thirdLevelOptions.Except(correctThirdLevelOptions));
-            Shuffle(allOptions);
+            //Shuffle(allOptions);
+
+            
 
             // Taking three options from the shuffled list
             options = allOptions.Take(3).ToList();
             answerFound = deweyTree.Find(firstQuestion);
             options.Add(answerFound);
-            Shuffle(options);
-
+            //Shuffle(options);
+            // Sorting options by call number
+            options.Sort((x, y) => x.DeweyData.ClassNumber.CompareTo(y.DeweyData.ClassNumber));
 
             // Updating labels
             for (int i = 0; i < optionLabels.Count; i++)

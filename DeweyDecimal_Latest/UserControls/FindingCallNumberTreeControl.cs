@@ -5,11 +5,8 @@
  * Project Title: Farm Central Prototype Website
  */
 
-using AxWMPLib;
 using System;
 using System.Drawing;
-using System.Numerics;
-using System.Security.Policy;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TimerLib;
@@ -17,8 +14,8 @@ using TimerLib;
 namespace DeweyDecimal_Latest
 {
     public partial class FindingCallNumberTreeControl : UserControl
-    {
-
+    { 
+        #region Declarations
         /// <summary>
         ///     Event Handler to be notfied if th egame is completed
         /// </summary>
@@ -37,10 +34,6 @@ namespace DeweyDecimal_Latest
         ///     
         /// </summary>
         FileWorker fileWorker;
-        /// <summary>
-        ///     Insantiating SoundPlayer
-        /// </summary>
-        private SoundPlayer soundPlayer = new SoundPlayer();
 
         /// <summary>
         ///     Using windows media player to play background music due to an issue soptting music with my own
@@ -53,11 +46,6 @@ namespace DeweyDecimal_Latest
         private Class1 deweyTimer;
 
         /// <summary>
-        ///     Holding custom green color hex 
-        /// </summary>
-        private string green_hex = "#12ED1B";
-
-        /// <summary>
         ///     Keeps track of the elapsed time for th eusers' game
         /// </summary>
         private int elapsedTimeInSeconds = 0;
@@ -66,6 +54,7 @@ namespace DeweyDecimal_Latest
         ///     Holds the number of games the user has played
         /// </summary>
         private int numOfGames = 0;
+        #endregion
 
         // ----------------------------------------------------------------------------------------------------------- //
         /// <summary>
@@ -92,6 +81,7 @@ namespace DeweyDecimal_Latest
         // ----------------------------------------------------------------------------------------------------------- //
         /// <summary>
         ///     On Load method for the control
+        ///     Starts music and waits for user response to begin game
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -102,7 +92,7 @@ namespace DeweyDecimal_Latest
                 // Finding song, and playing it
                 player.SoundLocation = @"Media\\AdventureWav.wav";
                 player.Load();
-               // player.Play();
+                player.Play();
 
                 // Showing ready button
                 btnReady.Visible = true;
@@ -110,41 +100,12 @@ namespace DeweyDecimal_Latest
 
                 // Starting game by reading from file
                 fileWorker.ReadFromFile();
-
-                // Attempting to add a dropshaddow to a control
-                pnlQuestionContainer.Paint += dropShadow;
             }
         }
 
         // ----------------------------------------------------------------------------------------------------------- //
         /// <summary>
-        ///     Method to apply a dropshaddow effect to control
-        ///     Mike, https://stackoverflow.com/questions/2463519/drop-shadow-in-winforms-controls
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void dropShadow(object sender, PaintEventArgs e)
-        {
-            Color[] shadow = new Color[3];
-            shadow[0] = Color.FromArgb(181, 181, 181);
-            shadow[1] = Color.FromArgb(195, 195, 195);
-            shadow[2] = Color.FromArgb(211, 211, 211);
-            Pen pen = new Pen(shadow[0]);
-
-            Panel p = pnlQuestionContainer;
-            Point pt = p.Location;
-            pt.Y += p.Height;
-            for (var sp = 0; sp < 3; sp++)
-            {
-                pen.Color = shadow[sp];
-                e.Graphics.DrawLine(pen, pt.X, pt.Y, pt.X + p.Width - 1, pt.Y);
-                pt.Y++;
-            }
-        }
-
-        // ----------------------------------------------------------------------------------------------------------- //
-        /// <summary>
-        ///     Handles user's lives (UI)
+        ///     Handles user's lives UI components
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -192,7 +153,6 @@ namespace DeweyDecimal_Latest
         {
             try
             {
-                // Stopping music
                 player.Stop();
             }
             catch (Exception ex)
@@ -226,6 +186,7 @@ namespace DeweyDecimal_Latest
         /// <param name="newText"></param>
         public async void UpdateLabelText(string newText)
         {
+            // Checks to see if the label is null or disposed, and returns if true
             if (lblMessageHeading == null || lblMessageHeading.IsDisposed)
             {
                 return;
@@ -245,14 +206,18 @@ namespace DeweyDecimal_Latest
                 return;
             }
 
+            // Checking if the label is not null, not disposed, and its handle is created
             if (lblMessageHeading != null && !lblMessageHeading.IsDisposed && lblMessageHeading.IsHandleCreated)
             {
+                // Checking if invoking is required for updating the label visibility
                 if (lblMessageHeading.InvokeRequired)
                 {
+                    // Invoking the update of the label visibility
                     Invoke(new MethodInvoker(() => { lblMessageHeading.Visible = false; }));
                 }
                 else
                 {
+                    // Updating the label visibility directly if invoking is not required
                     lblMessageHeading.Visible = false;
                 }
             }
@@ -286,6 +251,7 @@ namespace DeweyDecimal_Latest
         /// <param name="e"></param>
         private void timer_tree_Tick(object sender, EventArgs e)
         {
+            // First checking if the form is disposed - stop the timer if its true
             if (IsDisposed)
             {
                 // Stop the timer if the form is disposed
@@ -293,23 +259,28 @@ namespace DeweyDecimal_Latest
                 return;
             }
 
+            // Incrementing elapsed time
             elapsedTimeInSeconds++;
 
+            // Checking if the game is completed
             if (isGameCompleted)
             {
                 // Notifying subscribers that the game is completed
                 GameCompleted?.Invoke(this, EventArgs.Empty);
             }
 
+            // Checking to see if invoking is required for updating the timer label
             if (lblTimer.InvokeRequired)
             {
                 if (!IsDisposed && lblTimer != null && lblTimer.IsHandleCreated)
                 {
+                    // Invoking the update of timer label in the UI thread
                     lblTimer.Invoke(new Action(() => lblTimer.Text = TimeSpan.FromSeconds(elapsedTimeInSeconds).ToString()));
                 }
             }
             else
             {
+                // Updating the timer label directly if invoking is not required
                 lblTimer.Text = TimeSpan.FromSeconds(elapsedTimeInSeconds).ToString();
             }
         }
@@ -343,11 +314,12 @@ namespace DeweyDecimal_Latest
                     lblPbDisplay.Text = completedTime.ToString();
                 }
             }
-
         }
 
+        // ----------------------------------------------------------------------------------------------------------- //
         /// <summary>
-        ///     Ready Button Click
+        ///     Ready Button Click Event
+        ///     Starts the game and disables/hides button
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -369,26 +341,56 @@ namespace DeweyDecimal_Latest
             numOfGames++;
         }
 
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Changes users cursor to hand
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnExit_MouseEnter(object sender, EventArgs e)
         {
             Cursor = Cursors.Hand;
         }
 
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Changes users' cursor to default
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnExit_MouseLeave(object sender, EventArgs e)
         {
             Cursor = Cursors.Default;
         }
 
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Setting cursor to Hand
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button1_MouseEnter(object sender, EventArgs e)
         {
             Cursor = Cursors.Hand;
         }
 
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Setting cursor to default
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button1_MouseLeave(object sender, EventArgs e)
         {
             Cursor = Cursors.Default;
         }
 
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Ensuring user wants to exit the application, and exiting if wanted
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnExit_Click(object sender, EventArgs e)
         {
             var message = MessageBox.Show("You are about to exit, all your progress will be lost!", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
@@ -399,26 +401,20 @@ namespace DeweyDecimal_Latest
             }
         }
 
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Takes user back to the home/menu form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnHome_Click(object sender, EventArgs e)
         {
-
             var message = MessageBox.Show("Are you sure you want to go to the Main Menu?\nYour current progress will be lost.", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
             if (message == DialogResult.Yes)
             {
-                // Attempt to stop the sound
-                try
-                {
-                    player.Stop();
-                    //  soundPlayer.Dispose();
+                StopMusic();
 
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error stopping sound: {ex.Message}");
-                }
-
-                // Continue with navigating to the main menu
                 var parent = this.FindForm();
                 var menu = new StartMenu();
                 menu.Show();
@@ -426,11 +422,39 @@ namespace DeweyDecimal_Latest
             }
         }
 
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Stops the music from playing in the background
+        /// </summary>
+        public void StopMusic()
+        {
+            try
+            {
+                player.Stop();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error stopping sound: {ex.Message}");
+            }
+        }
+        
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Changes cursor to hand
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnReady_MouseEnter(object sender, EventArgs e)
         {
             Cursor = Cursors.Hand;
         }
 
+        // ----------------------------------------------------------------------------------------------------------- //
+        /// <summary>
+        ///     Changes cursor to default
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnReady_MouseLeave(object sender, EventArgs e)
         {
             Cursor = Cursors.Default;
