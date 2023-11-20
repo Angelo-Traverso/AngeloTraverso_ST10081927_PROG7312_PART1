@@ -635,17 +635,17 @@ namespace DeweyDecimal_Latest
                 // Smoothing the line drawn
                 g.SmoothingMode = SmoothingMode.AntiAlias;
 
-                Point startPoint = new Point(startPanel.Right, startPanel.Top + startPanel.Height / 2);
-                Point endPoint = new Point(endPanel.Left, endPanel.Top + endPanel.Height / 2);
+                var startPoint = new Point(startPanel.Right, startPanel.Top + startPanel.Height / 2);
+                var endPoint = new Point(endPanel.Left, endPanel.Top + endPanel.Height / 2);
 
                 // Draw the line
                 g.DrawLine(pen, startPoint, endPoint);
 
                 // Calculating arrowhead points
-                float arrowSize = 20;
-                float angle = (float)Math.Atan2(endPoint.Y - startPoint.Y, endPoint.X - startPoint.X);
-                PointF arrow1 = new PointF(endPoint.X - arrowSize * (float)Math.Cos(angle - Math.PI / 6), endPoint.Y - arrowSize * (float)Math.Sin(angle - Math.PI / 6));
-                PointF arrow2 = new PointF(endPoint.X - arrowSize * (float)Math.Cos(angle + Math.PI / 6), endPoint.Y - arrowSize * (float)Math.Sin(angle + Math.PI / 6));
+                var arrowSize = 20;
+                var angle = (float)Math.Atan2(endPoint.Y - startPoint.Y, endPoint.X - startPoint.X);
+                var arrow1 = new PointF(endPoint.X - arrowSize * (float)Math.Cos(angle - Math.PI / 6), endPoint.Y - arrowSize * (float)Math.Sin(angle - Math.PI / 6));
+                var arrow2 = new PointF(endPoint.X - arrowSize * (float)Math.Cos(angle + Math.PI / 6), endPoint.Y - arrowSize * (float)Math.Sin(angle + Math.PI / 6));
 
                 // Draw the arrowhead
                 g.DrawLine(pen, endPoint, arrow1);

@@ -168,10 +168,10 @@ namespace DeweyDecimal_Latest
         /// <param name="columns"></param>
         public void CreateLabelsForColumn(List<string> items, List<Panel> columns, List<Label> panelLabels)
         {
-            ToolTip tool = new ToolTip();
+            var tool = new ToolTip();
             for (int i = 0; i < items.Count && i < columns.Count; i++)
             {
-                Label label = new Label
+                var label = new Label
                 {
                     Text = items[i],
                     ForeColor = Color.White,
@@ -200,7 +200,7 @@ namespace DeweyDecimal_Latest
         /// <param name="text"></param>
         public void CreateToolTip(Control control, string text)
         {
-            ToolTip tool = new ToolTip();
+            var tool = new ToolTip();
             tool.SetToolTip(control, text);
         }
     }
