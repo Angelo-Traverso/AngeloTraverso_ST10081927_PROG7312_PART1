@@ -195,7 +195,7 @@ namespace DeweyDecimal_Latest
                 return;
             }
 
-            TimeSpan elapsedTime = TimeSpan.FromSeconds(elapsedTimeInSeconds);
+            var elapsedTime = TimeSpan.FromSeconds(elapsedTimeInSeconds);
             lblTimer.Text = elapsedTime.ToString(@"hh\:mm\:ss");
         }
         // ----------------------------------------------------------------------------------------------------------- //
@@ -240,7 +240,7 @@ namespace DeweyDecimal_Latest
             Book selectedBookObject = bookObjectList.Find(book => book.BookPanel == selectedBook);
             Dictionary<Panel, double> distanceToPlaceHolder = BookPlacementHandler.CalculateDistancesToPlaceholders(selectedBookObject, placeHolderList);
 
-            Panel closestPlaceholder = BookPlacementHandler.GetClosestPlaceholder(distanceToPlaceHolder);
+            var closestPlaceholder = BookPlacementHandler.GetClosestPlaceholder(distanceToPlaceHolder);
 
             if (closestPlaceholder == null)
             {
@@ -294,7 +294,7 @@ namespace DeweyDecimal_Latest
                     unsortedPanel.BackColor = bookHelper.GenerateRandomColor(random);
                     unsortedPanel.Enabled = true;
 
-                    Label callNumberLabel = new Label();
+                    var callNumberLabel = new Label();
                     callNumberLabel.Text = bookHelper.GenerateRandomCallingNumber(i, random);
                     callNumberLabel.Dock = DockStyle.Bottom;
                     callNumberLabel.TextAlign = ContentAlignment.MiddleCenter;
@@ -304,7 +304,7 @@ namespace DeweyDecimal_Latest
                     callNumberLabel.Font = new Font("Arial", 8, FontStyle.Regular);
 
 
-                    Book book = new Book(callNumberLabel.Text, unsortedPanel, bookHelper.GenerateRandomColor(random));
+                    var book = new Book(callNumberLabel.Text, unsortedPanel, bookHelper.GenerateRandomColor(random));
 
                     bookObjectList.Add(book);
 
@@ -319,7 +319,7 @@ namespace DeweyDecimal_Latest
         /// </summary>
         private void ShuffleBooks()
         {
-            Random random = new Random();
+            var random = new Random();
             int n = correctBookOrder.Count;
             while (n > 1)
             {
@@ -340,7 +340,7 @@ namespace DeweyDecimal_Latest
         {
             for (int i = 1; i <= 10; i++)
             {
-                Panel unsortedPanel = Controls.Find($"pnlSorted{i}", true).FirstOrDefault() as Panel;
+                var unsortedPanel = Controls.Find($"pnlSorted{i}", true).FirstOrDefault() as Panel;
 
                 if (unsortedPanel == null)
                 {
@@ -417,7 +417,7 @@ namespace DeweyDecimal_Latest
         /// </summary>
         private void GenerateCorrectBookOrder()
         {
-            List<string> callNumbers = new List<string>();
+            var callNumbers = new List<string>();
 
             for (int i = 0; i < bookObjectList.Count; i++)
             {
@@ -468,7 +468,7 @@ namespace DeweyDecimal_Latest
                 return;
             }
 
-            List<string> placedBookCallNumbers = GetPlacedBookCallNumbers();
+            var placedBookCallNumbers = GetPlacedBookCallNumbers();
 
             bool isCorrectOrder = CheckIfBooksAreInCorrectOrder(placedBookCallNumbers);
 
@@ -569,9 +569,9 @@ namespace DeweyDecimal_Latest
 
                 if (isOccupied && occupyingBook is Panel)
                 {
-                    Panel occupyingPanel = occupyingBook as Panel;
+                    var occupyingPanel = occupyingBook as Panel;
 
-                    Book occupyingBookObject = bookObjectList.Find(book => book.BookPanel == occupyingPanel);
+                    var occupyingBookObject = bookObjectList.Find(book => book.BookPanel == occupyingPanel);
 
                     placedBookList.Add(occupyingBookObject);
                 }
@@ -723,7 +723,7 @@ namespace DeweyDecimal_Latest
         private async Task LoadBackgroundImageAsync()
         {
             string imagePath = @"Images\BackgroundRoom.jpg";
-            Image backgroundImage = await Task.Run(() => LoadImageFromFile(imagePath));
+            var backgroundImage = await Task.Run(() => LoadImageFromFile(imagePath));
 
             if (backgroundImage != null)
             {
@@ -765,7 +765,7 @@ namespace DeweyDecimal_Latest
             }
             else
             {
-                StatisticsForm statsForm = new StatisticsForm(statsList);
+                var statsForm = new StatisticsForm(statsList);
                 statsForm.ShowDialog();
             }
         }
